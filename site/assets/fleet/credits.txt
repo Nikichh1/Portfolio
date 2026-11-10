@@ -1,0 +1,11 @@
+Снимки на автопарка / Fleet photography
+
+Реалните снимки са предоставени от възложителя за използване в сайта на Зелени такси. Името на фотографа не е предоставено; не е приписан външен лиценз или авторство.
+The real photographs were supplied by the client for use on the Zeleni Taxi website. The photographer's name was not supplied; no external licence or authorship is asserted.
+
+fleet-fair.webp — автомобили пред Международен панаир Пловдив / cars outside the International Fair in Plovdiv. Original dimensions 294×220; kept as a small contextual photograph.
+fleet-studio-zeleni-corrected.png — автомобил пред бяла архитектура / car against white architecture. Original dimensions 768×452. Корекция само на надписа TRAFFIC → ЗЕЛЕНИ; оригиналът е запазен. Only the door word TRAFFIC → ЗЕЛЕНИ was corrected; the original is retained.
+fleet-night-hospital.webp — автомобил пред осветен болничен вход през нощта / a car near an illuminated hospital entrance at night. Original dimensions 1600×1200.
+fleet-night-oldtown.webp — два автомобила край Стария град през нощта / two cars near the Old Town at night. Original dimensions 1600×1200.
+
+Обработка на трите WebP файла / Processing of the three WebP files: compressed at original dimensions. Natural colours and lighting are retained. No retouching, plate changes, relighting, cutouts or upscaling. The site may crop the display with CSS to fit the viewport.
