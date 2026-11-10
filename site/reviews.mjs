@@ -175,6 +175,8 @@ export function mountReviews({canvas, host, reducedMotion}) {
       context.fillRect(-1,-1,2,2);
     });
     context.restore();
+    host.style?.setProperty('--review-line-phase',String(value));
+    document.documentElement?.style?.setProperty('--review-colour-phase',String(value));
     canvas.dataset.reviewFrames = String(++paintedFrames);
   }
   function tick(now) {

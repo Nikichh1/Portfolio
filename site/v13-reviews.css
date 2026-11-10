@@ -6,7 +6,7 @@
 .review-presentation{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:25px;width:min(540px,100%);min-height:220px;text-align:center}
 .review-google-mark{width:150px;height:150px;max-width:none;margin:-45px 0;object-fit:contain}
 .review-presentation h2{color:var(--ink);font-family:Manrope,sans-serif;font-weight:500;font-size:clamp(34px,4vw,50px);line-height:1.2;letter-spacing:-.025em}
-.google-review-launch{display:inline-flex;flex:none;flex-direction:row;align-items:center;justify-content:center;gap:22px;width:auto;max-width:100%;min-height:48px;padding:6px 0;border:0;border-bottom:1px solid #ad96cf;border-radius:0;background:none;color:var(--ink);box-shadow:none;font-size:14px;font-weight:650;text-align:left;transition:color .2s,border-color .2s}
+.google-review-launch{position:relative;display:inline-flex;flex:none;flex-direction:row;align-items:center;justify-content:center;gap:22px;width:auto;max-width:100%;min-height:48px;padding:6px 0;border:0;border-bottom:0;border-radius:0;background:none;color:var(--ink);box-shadow:none;font-size:14px;font-weight:650;text-align:left;transition:color .2s,border-color .2s}
 .google-review-launch .arrow{width:22px;flex:none}
 .google-review-launch:hover{color:var(--ink);border-color:#f6c9f1;box-shadow:none}
 .google-review-launch:focus-visible{outline:2px solid var(--ink);outline-offset:7px}
@@ -21,3 +21,11 @@
 }
 @media(prefers-reduced-motion:reduce){.google-review-launch{transition:none}}
 html[data-reduced-motion=true] .google-review-launch{transition:none}
+
+/* V15: the existing finite light phase also moves this thin colour line. */
+.google-review-launch:after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;pointer-events:none;background:linear-gradient(90deg,#ef58b4,#9565ee,#347bff,#ef58b4);background-size:200% 100%;background-position:calc(var(--review-line-phase,0)*100%) 50%}
+
+/* V16: paper remains white; only soft colour enters from beneath. */
+body{background:transparent}
+html:before{content:"";position:fixed;inset:-12%;z-index:-1;pointer-events:none;opacity:var(--review-atmosphere,0);background-image:radial-gradient(ellipse 56% 56% at 32% 74%,rgba(86,149,255,.28),transparent 72%),radial-gradient(ellipse 51% 56% at 73% 76%,rgba(236,126,203,.22),transparent 72%),radial-gradient(ellipse 54% 50% at 51% 98%,rgba(158,129,246,.18),transparent 74%);background-repeat:no-repeat;background-size:130% 130%;background-position:calc(50% + (var(--review-colour-phase,0) - .85)*12%) 50%,calc(50% - (var(--review-colour-phase,0) - .85)*14%) 50%,50% calc(50% + (var(--review-colour-phase,0) - .85)*8%)}
+.reviews-canvas{opacity:.72}
