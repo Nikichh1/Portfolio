@@ -1,14 +1,16 @@
 // Original directed spectrum study. No Google/Gemini SDK, network or tracking.
 // The actual Google mark stays in a separate, unchanged image in the HTML.
 const COLOURS = ['#4285f4', '#ea4335', '#fbbc05', '#34a853', '#35c9e4', '#8b70ea', '#de70c5'];
-const FIELD_COLOURS = [0,4,5,6].map(index => {
-  const hex = COLOURS[index];
+const RGB_COLOURS = COLOURS.map(hex => {
   return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)];
 });
+const FIELD_COLOURS = [0,4,5,6,1,2,3].map(index => RGB_COLOURS[index]);
 const TAU = Math.PI * 2;
 const BURST_MS = 1550;
 const MAX_BURST_FRAMES = 180;
 const CLOCK_FALLBACK_MS = 1000 / 60;
+const PARTICLE_COUNT = 120;
+const MOBILE_PARTICLES = 76;
 
 function fieldColour(phase, index) {
   const safePhase = Number.isFinite(phase) ? Math.max(0,phase) : 0;
@@ -64,12 +66,12 @@ export function mountReviews({canvas, host, reducedMotion}) {
   let pointerX = .5;
   let pointerY = .5;
   let lastPointerStart = -Infinity;
-  const particles = Array.from({length:220}, (_, index) => ({
+  const particles = Array.from({length:PARTICLE_COUNT}, (_, index) => ({
     seed:index * 2.399963229728653,
-    size:.55 + ((index * 13) % 15) / 15,
-    alpha:.24 + ((index * 7) % 35) / 100
+    size:1.2 + ((index * 13) % 15) / 10,
+    alpha:.4 + ((index * 7) % 35) / 100
   }));
-  canvas.dataset.reviewStyle = 'directed-spectrum';
+  canvas.dataset.reviewStyle = 'directed-edge-orbits';
 
   const canDraw = () => !disposed && requestedVisible && intersecting && !document.hidden;
   function stop(state = 'paused') {
@@ -103,86 +105,45 @@ export function mountReviews({canvas, host, reducedMotion}) {
     context.clearRect(0,0,width,height);
     context.save();
 
-    const narrow = width < 600;
-    const swayX = (pointerX-.5) * 7 * activity;
-    const swayY = (pointerY-.5) * 5 * activity;
-    const travel = Math.max(0,Math.min(1,1-activity));
-    const head = .18+.58*(1-Math.pow(1-travel,3));
-    const contentBottom = exclusions.reduce((bottom,box) => Math.max(bottom,box.y+box.height),0);
-    const flowY = Math.max(height*.72,Math.min(height*.85,contentBottom+30));
-    const point = t => {
-      const angle = (t-.13)*TAU+Math.sin(value*.28)*.18;
-      const x = width*(-.08+1.16*t)+swayX;
-      const y = flowY+Math.sin(angle)*height*.08+swayY;
-      const dx = width*1.16;
-      const dy = Math.cos(angle)*height*.08*TAU;
-      const length = Math.hypot(dx,dy);
-      return {x,y,tx:dx/length,ty:dy/length,nx:-dy/length,ny:dx/length};
+    const narrow = width < 600, strength = isReduced() ? .52 : 1;
+    const swayX = (pointerX-.5)*7*activity, swayY = (pointerY-.5)*5*activity;
+    const orbit = (t, lane=0) => {
+      const angle = TAU*(t+value*.075*(lane?-1:1));
+      const rx=width*(lane?.55:.51),ry=height*(lane?.35:.45);
+      const dx=-rx*Math.sin(angle),dy=ry*Math.cos(angle),length=Math.hypot(dx,dy)||1;
+      return {x:width*.5+rx*Math.cos(angle)+swayX,y:height*(lane?.54:.50)+ry*Math.sin(angle)+swayY,tx:dx/length,ty:dy/length};
     };
-    const spectrum = context.createLinearGradient(0,flowY,width,flowY-height*.1);
-    [0,.27,.58,.82,1].forEach((position,index) => {
-      spectrum.addColorStop(position,`rgb(${fieldColour(value*.23,index*.72)})`);
-    });
-    context.fillStyle = spectrum;
-    // One connected ribbon carries a concentrated front and a quieter tail.
-    // Nested translucent widths give it a diffused edge without a large blur.
-    const layers = [[narrow?30:46,.08],[narrow?20:30,.14],[narrow?8:13,.5],[1.8,.9]];
-    for (const [thickness,alpha] of layers) {
-      context.globalAlpha = alpha;
-      context.beginPath();
-      for (let side=0;side<2;side++) {
-        for (let sample=0;sample<=64;sample++) {
-          const t = side ? 1-sample/64 : sample/64;
-          const p = point(t);
-          const energy = .21+.79*Math.exp(-Math.pow((t-head)/.21,2));
-          const edge = Math.pow(Math.max(0,Math.sin(Math.PI*t)),.4);
-          const offset = thickness*energy*edge*(side?-1:1);
-          const x = p.x+p.nx*offset;
-          const y = p.y+p.ny*offset;
-          if (!side&&!sample) context.moveTo(x,y); else context.lineTo(x,y);
-        }
-      }
-      context.closePath();
-      context.fill();
+    // Four authentic Google colours anchor the edges; cyan/violet transitions
+    // connect them. The unchanged content mask below clears the entire core.
+    const glowRadius=Math.min(width*.43,height*.88);
+    for(const [x,y,index]of [[.08,.12,0],[.94,.25,1],[.84,.94,2],[.13,.91,3]]){
+      const cx=width*x+swayX,cy=height*y+swayY,colour=RGB_COLOURS[index].join(','),glow=context.createRadialGradient(cx,cy,0,cx,cy,glowRadius);
+      glow.addColorStop(0,`rgba(${colour},.36)`);glow.addColorStop(.45,`rgba(${colour},.18)`);glow.addColorStop(1,`rgba(${colour},0)`);
+      context.globalAlpha=strength;context.fillStyle=glow;context.fillRect(cx-glowRadius,cy-glowRadius,glowRadius*2,glowRadius*2);
     }
-    // Small separated responses share the ribbon's left-to-right direction.
-    // These are accents in the composition, not a second cloud or orbit.
-    for (const [start,span,colour] of [[.065,.18,'53,201,228'],[.79,.15,'234,92,131']]) {
-      const cue = context.createLinearGradient(width*start,0,width*(start+span),0);
-      cue.addColorStop(0,`rgba(${colour},0)`);
-      cue.addColorStop(.68,`rgba(${colour},.65)`);
-      cue.addColorStop(1,`rgba(${colour},0)`);
-      context.strokeStyle = cue;
-      context.lineWidth = narrow?2:2.7;
-      context.globalAlpha = .5;
-      context.beginPath();
-      for (let sample=0;sample<=24;sample++) {
-        const t = sample/24;
-        const x = width*(start+t*span);
-        const y = height*(.19+Math.sin(t*Math.PI)*.022)+Math.sin(value*.24)*3;
-        if (!sample) context.moveTo(x,y); else context.lineTo(x,y);
-      }
-      context.stroke();
+    const spectrum=context.createLinearGradient(0,0,width,height);
+    [0,.16,.34,.5,.67,.84,1].forEach((position,index)=>spectrum.addColorStop(position,`rgb(${fieldColour(value*.08,index)})`));
+    context.lineCap='round';context.strokeStyle=spectrum;
+    for(let lane=0;lane<2;lane++)for(const [thickness,alpha]of [[narrow?20:30,.16],[narrow?7:10,.42],[narrow?1.5:2,.68]]){
+      context.lineWidth=thickness;context.globalAlpha=alpha*strength*(lane?.65:1);context.beginPath();
+      for(let sample=0;sample<=72;sample++){const p=orbit(sample/72,lane);if(!sample)context.moveTo(p.x,p.y);else context.lineTo(p.x,p.y);}context.stroke();
     }
-    const count = narrow ? 132 : particles.length;
-    context.lineCap = 'round';
-    for (let index=0;index<count;index++) {
-      const particle = particles[index];
-      const tail = index/(count-1);
-      const t = head-Math.pow(tail,.68)*.7+Math.sin(particle.seed)*.006;
-      if (t<0||t>1) continue;
-      const p = point(t);
-      const spread = Math.sin(particle.seed+value*.21)*(2+tail*(narrow?17:25));
-      const x = p.x+p.nx*spread;
-      const y = p.y+p.ny*spread;
-      const stretch = particle.size+(1-tail)*activity*(narrow?3.5:6);
-      context.globalAlpha = particle.alpha*Math.pow(1-tail,.48);
-      context.strokeStyle = `rgb(${fieldColour(value*.23,t*2.5)})`;
-      context.lineWidth = particle.size;
-      context.beginPath();
-      context.moveTo(x-p.tx*stretch,y-p.ty*stretch);
-      context.lineTo(x+p.tx*stretch,y+p.ty*stretch);
-      context.stroke();
+    const count=narrow?MOBILE_PARTICLES:particles.length;
+    canvas.dataset.reviewParticles=String(count);
+    for(let index=0;index<count;index++){
+      const particle=particles[index],lane=index%2,t=(index/count+Math.sin(particle.seed)*.012+1)%1,p=orbit(t,lane),spread=Math.sin(particle.seed+value*.2)*4,x=p.x-p.ty*spread,y=p.y+p.tx*spread,stretch=particle.size+activity*(narrow?2.5:4);
+      context.globalAlpha=particle.alpha*strength;context.strokeStyle=`rgb(${fieldColour(value*.08,t*7)})`;context.lineWidth=particle.size;
+      context.beginPath();context.moveTo(x-p.tx*stretch,y-p.ty*stretch);context.lineTo(x+p.tx*stretch,y+p.ty*stretch);context.stroke();
+    }
+    const orbCount=narrow?4:6;
+    canvas.dataset.reviewOrbs=String(orbCount);
+    for(let index=0;index<orbCount;index++){
+      const p=orbit([.04,.23,.43,.62,.78,.92][index],index%2),radius=(narrow?7:10)+(index*7%10),colour=RGB_COLOURS[index].join(','),halo=context.createRadialGradient(p.x,p.y,0,p.x,p.y,radius*3.2);
+      halo.addColorStop(0,`rgba(${colour},.42)`);halo.addColorStop(.4,`rgba(${colour},.2)`);halo.addColorStop(1,`rgba(${colour},0)`);
+      context.globalAlpha=strength;context.fillStyle=halo;context.beginPath();context.arc(p.x,p.y,radius*3.2,0,TAU);context.fill();
+      const sphere=context.createRadialGradient(p.x-radius*.28,p.y-radius*.3,radius*.04,p.x,p.y,radius);
+      sphere.addColorStop(0,'rgba(255,255,255,.98)');sphere.addColorStop(.22,`rgba(${colour},.98)`);sphere.addColorStop(.72,`rgba(${colour},.84)`);sphere.addColorStop(1,`rgba(${colour},0)`);
+      context.fillStyle=sphere;context.beginPath();context.arc(p.x,p.y,radius,0,TAU);context.fill();
     }
     // Soft elliptical clearance keeps a completely clear content core and
     // fades the surrounding colour smoothly, without rectangular cutouts.

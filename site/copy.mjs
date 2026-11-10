@@ -191,6 +191,7 @@ Object.assign(copy.bg,{
   v7RideNote:'Настани се удобно.',
   v7RideModel:'Hyundai Ioniq Hybrid'
 });
+
 Object.assign(copy.en,{
   v7InstallHeading:'Book from\nyour phone.',
   v7InstallDescription:'Choose the addresses and confirm your booking.',
@@ -203,4 +204,38 @@ Object.assign(copy.en,{
   v7InstallBookingCaption:'Confirm your booking.',
   v7RideNote:'Make yourself comfortable.',
   v7RideModel:'Hyundai Ioniq Hybrid'
+});
+
+// V12 updates the active invitation; earlier revision keys remain as history.
+Object.assign(copy.bg,{
+  title:'Зелени такси — Пловдив',
+  description:'Зелени такси в Пловдив. Поръчвай през приложението и следи колата до твоя адрес. Hyundai Ioniq Hybrid от нашия автопарк.',
+  v6HeroOne:'Пловдив.',v6HeroTwo:'Със Зелени.',orderApp:'Отвори приложението',
+  v7InstallHeading:'Виждаш кой идва.',
+  v7InstallDescription:'Избираш откъде и докъде. В приложението следиш колата до твоя адрес.',
+  v6FleetTitle:'Зелените на Пловдив.',
+  v6FleetDescription:'От гарата до хотела. От Капана до вкъщи.',
+  teamTitle:'Карай със Зелени.',
+  teamDescription:'За работа като водач се свържи с Константин Петров или Андрей Нинов.',
+  lastTitle:'Инсталирай Зелени.',
+  lastDescription:'Пловдив е началото. Създаваме Зелени с амбиция за България и Европа.',
+  lastAndroid:'Инсталирай за Android',lastBrowser:'За iPhone и браузър',
+  rights:'Всички права запазени.',brandName:'Зелени такси',footerBrand:'Зелени такси',
+  dockInstall:'Инсталирай Зелени'
+});
+Object.assign(copy.en,{
+  title:'ZELENI TAXI — Plovdiv',
+  description:'ZELENI TAXI in Plovdiv. Book in the app and follow your taxi to your pickup address. Hyundai Ioniq Hybrid cars from our fleet.',
+  v6HeroOne:'Plovdiv.',v6HeroTwo:'ZELENI TAXI.',orderApp:'Open the app',
+  v7InstallHeading:'Know who’s on the way.',
+  v7InstallDescription:'Set your pickup and destination, then follow your taxi in the app.',
+  v6FleetTitle:'The green taxis of Plovdiv.',
+  v6FleetDescription:'From the station to your hotel. From Kapana to your door.',
+  teamTitle:'Drive with ZELENI TAXI.',
+  teamDescription:'To discuss driving with us, call Konstantin Petrov or Andrey Ninov.',
+  lastTitle:'Get ZELENI TAXI.',
+  lastDescription:'Plovdiv is our starting point. Our ambition reaches across Bulgaria and Europe.',
+  lastAndroid:'Install for Android',lastBrowser:'For iPhone and browser',
+  rights:'All rights reserved.',brandName:'ZELENI TAXI',footerBrand:'ZELENI TAXI',
+  dockInstall:'Get ZELENI TAXI'
 });

@@ -1,14 +1,14 @@
-import {copy} from './copy.mjs';
+import {copy} from './copy.mjs?v=12';
 import {createScrollCursor} from './scroll-cursor.mjs';
 import {surfacePalette,clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline} from './v7-timeline.mjs';
-import {presentationFrame,openingComposition,nativePlaneFrame,backgroundDarkness,sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v11-motion.mjs';
+import {presentationFrame,openingComposition,nativePlaneFrame,backgroundDarkness,sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v12-motion.mjs';
 const root=document.documentElement,header=document.querySelector('.site-header'),story=document.querySelector('.product-story'),marker=document.querySelector('.product-start'),pin=document.querySelector('.product-pin'),windowEl=document.querySelector('.native-window'),plane=document.querySelector('.native-viewport');
 const intro=document.querySelector('.product-intro'),car=document.querySelector('.hero-car'),host=document.querySelector('#native-host'),fallback=document.querySelector('#native-fallback'),install=document.querySelector('#app-install'),rideNote=document.querySelector('.ride-note'),reviews=document.querySelector('#reviews'),dock=document.querySelector('.mobile-dock'),last=document.querySelector('#last-call');
 const media=matchMedia('(prefers-reduced-motion: reduce)'),forcedReduced=new URL(location.href).searchParams.get('motion')==='reduce',reduced=()=>media.matches||forcedReduced,query={get matches(){return reduced();},addEventListener(...args){media.addEventListener(...args);},removeEventListener(...args){media.removeEventListener(...args);}};
 const cursor=createScrollCursor();
-let lang='bg',native,reviewEffect,ready=false,disposed=false,activated=false,enhanced=false,layout=null,raf=0,frames=0,scrollPosition=scrollY,lastSurface='',dockHidden=null,lastNativeSize='';
-root.dataset.introRevision='v11-road-app-compositor-1';
+let lang='bg',native,reviewEffect,ready=false,disposed=false,activated=false,enhanced=false,layout=null,raf=0,frames=0,measurements=0,scrollPosition=scrollY,lastSurface='',dockHidden=null,lastNativeSize='';
+root.dataset.introRevision='v12-grounded-car-single-shell-1';
 root.dataset.motionState='idle';
 
 // Geometry is read only on real layout changes, never on native scroll events.
@@ -25,8 +25,9 @@ function measure(snap=false){
  const destination={cx:rect.left+rect.width/2-offset.x,cy:rect.top+rect.height/2-offset.y-start-shift,width:parseFloat(style.width),height:parseFloat(style.height),radius:parseFloat(style.borderRadius),padding:parseFloat(style.paddingLeft)};
  const opening=openingComposition({width:w,height:h,introBottom:introRect.bottom-pinRect.top+18*(1-parseFloat(intro.style.getPropertyValue('--intro-opacity')||'1'))});
  layout={width:w,height:h,header:hh,viewport:enhanced?h+hh:innerHeight,markerDocTop:start+scrollPosition,storySpan:b.height,installTop:ib.top+scrollPosition-shift,installHeight:ib.height,reviewTop:rb.top+scrollPosition,reviewHeight:rb.height,lastTop:lb.top+scrollPosition,destination,opening};
+ root.dataset.layoutRevision=String(++measurements);
  for(const [key,value]of Object.entries({x:opening.car.x,y:opening.car.y,width:opening.car.width}))pin.style.setProperty('--opening-car-'+key,value+'px');
- pin.style.setProperty('--road-y',opening.car.y-110+'px');pin.style.setProperty('--road-height',opening.car.height+200+'px');
+ pin.style.setProperty('--road-y',opening.car.y-(w<=700?44:110)+'px');pin.style.setProperty('--road-height',opening.car.height+(w<=700?124:200)+'px');
  plane.style.setProperty('--plane-width',w+'px');plane.style.setProperty('--plane-height',h+'px');host.dataset.presentationViewport=JSON.stringify([w,h]);
  const nativeSize=w+'x'+h;if(native&&nativeSize!==lastNativeSize){lastNativeSize=nativeSize;native.resize(true);}
  const geometry=currentGeometry(),timeline=sceneTimeline({...geometry,viewport:layout.viewport,storyBottom:geometry.markerTop+layout.storySpan},enhanced);
@@ -59,15 +60,14 @@ function render(){
  for(const name of['x','y','width','height','radius','padding'])windowEl.style.setProperty('--native-'+name,f[name].toFixed(3)+'px');
  const shadow=layout.width<=700?[13,22,42,.17]:[17,26,57,.18];
  windowEl.style.setProperty('--native-shadow',enhanced&&phase.handoff?shadow[0]*phase.carrier+'px '+shadow[1]*phase.carrier+'px '+shadow[2]*phase.carrier+'px rgba(5,18,8,'+shadow[3]*phase.carrier+')':'0 '+20*(1-f.expand)+'px '+50*(1-f.expand)+'px rgba(5,18,8,'+.19*(1-f.expand)+')');
- windowEl.style.setProperty('--native-rotation',(f.rotation||0)+'deg');windowEl.style.setProperty('--carrier-opacity',String(enhanced?1-phase.screen:1));windowEl.setAttribute('aria-hidden',String(enhanced&&phase.screen>=1));windowEl.style.setProperty('--phone-lens-opacity',String(1-smooth(f.expand/.5)));windowEl.style.setProperty('--app-preview-opacity',String(1-smooth((f.expand-.04)/.38)));
- pin.style.setProperty('--scene-expansion',String(f.expand));pin.style.setProperty('--road-opacity',String(f.car));intro.style.setProperty('--intro-opacity',String(f.intro));intro.style.setProperty('--intro-y',-18*(1-f.intro)+'px');intro.inert=f.intro<.05;
+ windowEl.style.setProperty('--native-rotation',(f.rotation||0)+'deg');windowEl.style.setProperty('--carrier-opacity',String(enhanced&&phase.screen>=1?0:1));windowEl.style.setProperty('--handoff-screen',String(phase.screen));windowEl.setAttribute('aria-hidden',String(enhanced&&phase.screen>=1));windowEl.style.setProperty('--phone-lens-opacity',String(1-smooth(f.expand/.5)));windowEl.style.setProperty('--app-preview-opacity',String(1-smooth((f.expand-.04)/.38)));
+ pin.style.setProperty('--scene-expansion',String(f.expand));pin.style.setProperty('--media-lift-y',-(f.lift||0)+'px');pin.style.setProperty('--road-opacity',String(f.car));intro.style.setProperty('--intro-opacity',String(f.intro));intro.style.setProperty('--intro-y',-18*(1-f.intro)+'px');intro.inert=f.intro<.05;
  car.style.setProperty('--car-opacity',String(f.car));car.style.setProperty('--car-x',-30*(1-f.car)+'px');car.style.setProperty('--car-y',8*(1-f.car)+'px');
- const note=ready&&!reduced()?smooth((f.progress-.5)/.12)*(1-smooth((f.progress-.91)/.07))*(1-phase.handoff):0;rideNote?.style.setProperty('--ride-note-opacity',String(note));rideNote?.style.setProperty('--ride-note-y',14*(1-note)+'px');
- for(const [name,value]of Object.entries({'install-progress':installP,'handoff-screen':phase.screen,'handoff-booking':phase.booking,'handoff-copy':phase.copy}))install.style.setProperty('--'+name,String(value));
+ for(const [name,value]of Object.entries({'install-progress':installP,'handoff-screen':phase.screen,'handoff-booking':phase.booking,'handoff-copy':phase.copy,'handoff-target':phase.screen>=1?1:0}))install.style.setProperty('--'+name,String(value));
  setSurface(enhanced?backgroundDarkness(f.expand,phase.handoff,reduced()):reduced()?0:smooth((f.progress-.09)/.35)*(1-smooth(exit)));
  reviewEffect?.setVisible(!document.hidden&&layout.reviewTop-scrollPosition<layout.viewport&&layout.reviewTop+layout.reviewHeight-scrollPosition>layout.header);
  const hideDock=geometry.markerTop+layout.storySpan>layout.viewport*.2||layout.lastTop-scrollPosition<layout.viewport*.8;if(hideDock!==dockHidden){dockHidden=hideDock;dock.classList.toggle('dock-hidden',hideDock);dock.inert=hideDock;dock.setAttribute('aria-hidden',String(hideDock));}
- root.dataset.appProgress=f.progress.toFixed(5);root.dataset.motionState=cursor.snapshot().active?'active':'idle';root.dataset.motionFrames=String(++frames);root.dataset.motionClock=JSON.stringify(cursor.snapshot());root.dataset.nativeExpansion=f.expand.toFixed(5);root.dataset.installProgress=installP.toFixed(5);root.dataset.handoffProgress=phase.handoff.toFixed(5);root.dataset.handoffRaw=phase.rawHandoff.toFixed(5);root.dataset.handoffScreen=phase.screen.toFixed(5);root.dataset.handoffEndpoint=JSON.stringify(end);root.dataset.handoffCarrier=JSON.stringify({x:f.x,y:f.y,width:f.width,height:f.height,rotation:f.rotation||0});root.dataset.handoffFlowShift=flowShift.toFixed(3);root.dataset.nativePlane=JSON.stringify(planeFrame);
+ root.dataset.appProgress=f.progress.toFixed(5);root.dataset.motionState=cursor.snapshot().active?'active':'idle';root.dataset.motionFrames=String(++frames);root.dataset.motionClock=JSON.stringify(cursor.snapshot());root.dataset.nativeExpansion=f.expand.toFixed(5);root.dataset.installProgress=installP.toFixed(5);root.dataset.handoffProgress=phase.handoff.toFixed(5);root.dataset.handoffRaw=phase.rawHandoff.toFixed(5);root.dataset.handoffScreen=phase.screen.toFixed(5);root.dataset.handoffEndpoint=JSON.stringify(end);root.dataset.handoffCarrier=JSON.stringify({x:f.x,y:f.y,width:f.width,height:f.height,rotation:f.rotation||0});root.dataset.handoffFlowShift=flowShift.toFixed(3);root.dataset.openingLift=String(f.lift||0);root.dataset.handoffShell=phase.screen>=1?'app':'native';root.dataset.nativePlane=JSON.stringify(planeFrame);
 }
 function tick(time){raf=0;if(disposed||document.hidden)return;cursor.step(time);render();if(cursor.snapshot().active)schedule();}
 function schedule(){if(!raf&&!disposed&&!document.hidden)raf=requestAnimationFrame(tick);}
@@ -87,10 +87,20 @@ function language(next){
 function useFallback(){ready=false;root.dataset.nativePresentation='fallback';fallback.style.opacity='1';host.style.opacity='0';measure(true);}
 for(const button of document.querySelectorAll('[data-lang]'))button.addEventListener('click',()=>language(button.dataset.lang));
 addEventListener('scroll',scrollSample,{passive:true});addEventListener('resize',()=>{if(layout&&pin.clientWidth===layout.width&&pin.clientHeight===layout.height&&header.getBoundingClientRect().height===layout.header)return;measure(true);},{passive:true});addEventListener('pageshow',()=>measure(true),{passive:true});media.addEventListener('change',()=>measure(true));
+// Viewport units and font wrapping may settle after the resize event. Observe
+// actual layout boxes so the cached target is fresh before exchanging shells.
+// Transforms do not resize these boxes; scrolling never enters this path.
+const observedSizes=new WeakMap();
+const layoutObserver=typeof ResizeObserver==='function'?new ResizeObserver(entries=>{
+ let changed=false;
+ for(const {target,contentRect}of entries){const size=contentRect.width+'x'+contentRect.height;if(observedSizes.get(target)!==size){observedSizes.set(target,size);changed=true;}}
+ if(changed&&!disposed)measure(true);
+}):null;
+for(const element of[header,story,pin,intro,install,install.querySelector('.install-stage')])if(element)layoutObserver?.observe(element);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){if(raf)cancelAnimationFrame(raf);raf=0;native?.setVisible(false);reviewEffect?.setVisible(false);}else measure(true);});
 document.addEventListener('focusin',event=>{if(event.target.closest?.('.app-install'))measure(true);});
-addEventListener('pagehide',event=>{if(raf)cancelAnimationFrame(raf);raf=0;native?.setVisible(false);reviewEffect?.setVisible(false);if(!event.persisted){disposed=true;native?.dispose();reviewEffect?.dispose();}});
+addEventListener('pagehide',event=>{if(raf)cancelAnimationFrame(raf);raf=0;native?.setVisible(false);reviewEffect?.setVisible(false);if(!event.persisted){disposed=true;layoutObserver?.disconnect();native?.dispose();reviewEffect?.dispose();}});
 document.fonts?.ready.then(()=>{if(!disposed)measure(false);});
 document.querySelector('#year').textContent=new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Europe/Sofia'}).format(new Date());let preferred='bg';try{preferred=localStorage.getItem('zeleni-site-language')||'bg';}catch{}language(preferred);
 if(new URL(location.href).searchParams.get('graphics')==='off')useFallback();else import('./native/presentation.mjs?v=11').then(async({mountNativePresentation})=>{const instance=await mountNativePresentation({host,reducedMotion:query});if(disposed){instance.dispose();return;}native=instance;lastNativeSize=layout.width+'x'+layout.height;const result=await native.whenReady;if(disposed||result.state==='disposed')return;if(result.state==='fallback'){useFallback();return;}ready=true;fallback.style.opacity='0';host.style.opacity='1';root.dataset.nativePresentation='ready';measure(true);}).catch(()=>{if(!disposed)useFallback();});
-import('./reviews.mjs').then(({mountReviews})=>{if(disposed)return;reviewEffect=mountReviews({host:reviews,canvas:document.querySelector('#reviews-canvas'),reducedMotion:query});schedule();}).catch(()=>{});
+import('./reviews.mjs?v=12').then(({mountReviews})=>{if(disposed)return;reviewEffect=mountReviews({host:reviews,canvas:document.querySelector('#reviews-canvas'),reducedMotion:query});schedule();}).catch(()=>{});
