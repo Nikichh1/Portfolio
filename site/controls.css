@@ -1,0 +1,18 @@
+/* Shared icons stay intact at every button width. */
+.action-icon{display:block;flex:none;width:24px;height:24px;transition:transform .25s var(--ease)}
+.install-download .action-icon,.google-review-launch .action-icon{width:20px;height:20px}
+@media(max-width:700px){.hero-actions .action-icon{width:18px;height:18px}}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+ html:not([data-reduced-motion=true]) a:hover>.action-icon--forward{transform:translateX(3px)}
+ html:not([data-reduced-motion=true]) a:hover>.action-icon--download{transform:translateY(3px)}
+ html:not([data-reduced-motion=true]) a:hover>.action-icon--external{transform:translate(2px,-2px)}
+}
+
+/* Caption-free gallery and the same display family for all chapter titles. */
+.fair-photo{justify-content:flex-end}
+.fair-photo>img{width:min(100%,294px);align-self:flex-end}
+.review-presentation h2{font-family:Unbounded,Manrope,sans-serif;font-size:clamp(30px,3.7vw,46px);font-weight:450}
+@media(max-width:700px){
+ .fair-photo>img{width:min(75%,294px)}
+ .review-presentation h2{font-size:clamp(26px,7.4vw,35px)}
+}

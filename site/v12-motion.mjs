@@ -37,19 +37,30 @@ export function sceneTimeline(input,enhanced=true){
  const tailSpan=Math.min(occupiedViewport*.35,driveRunway*.3),originalRunway=Math.max(1,driveRunway-tailSpan);
  return {runway,originalRunway,driveRunway,tailSpan,handoffSpan,total:runway,target:clamp((header-markerTop)/runway)};
 }
-export function scenePhase(distance,timeline){
+export function scenePhase(distance,timeline,mobile=false){
  const originalRunway=timeline.originalRunway||timeline.driveRunway,drive=clamp(distance/originalRunway);
  const native=clamp(distance/timeline.runway);
  const rawHandoff=timeline.handoffSpan?clamp((distance-timeline.driveRunway)/timeline.handoffSpan):0;
  const handoff=smooth(rawHandoff);
- return {drive,native,handoff,rawHandoff,carrier:smooth(rawHandoff/.64),screen:smooth((rawHandoff-.64)/.14),booking:clamp(smooth((handoff-.08)/.50)),copy:clamp(smooth((handoff-.55)/.12))};
+ // The screen begins dissolving while the handset is still settling. The
+ // tall mobile carrier approaches the final screen ratio earlier.
+ const release=.90;
+ const dissolveStart=mobile?.48:.62;
+ const carrier=smooth(rawHandoff/release);
+ const screen=smooth((rawHandoff-dissolveStart)/(release-dissolveStart));
+ const booking=smooth((rawHandoff-.18)/.46);
+ const copy=smooth((rawHandoff-.43)/.18);
+ return {drive,native,handoff,rawHandoff,carrier,screen,booking,copy};
 }
 export function addressOffset(progress,mobile){
  return {x:-progress*(mobile?112:14),y:(1-progress)*(mobile?20:34)};
 }
-export function flowCoordinates({header,markerTop,storySpan,pinHeight},distance,screen){
+export function flowCoordinates({header,markerTop,storySpan,pinHeight},distance,{rawHandoff,screen}){
  const rawDistance=header-markerTop;
- const shift=(rawDistance-distance)*(1-screen),displayedMarker=header-distance;
+ // Engage scroll compensation gradually, then release it as the screenshot
+ // takes over. Both edges have zero slope even after a large touch scroll.
+ const shift=(rawDistance-distance)*smooth(rawHandoff/.26)*(1-screen);
+ const displayedMarker=header-distance;
  const pinTop=Math.min(Math.max(header,displayedMarker),storySpan+displayedMarker-pinHeight);
  return {shift,pinTop};
 }

@@ -1,8 +1,8 @@
-import {copy} from './copy.mjs?v=14';
+import {copy} from './copy.mjs?v=18';
 import {createScrollCursor} from './scroll-cursor.mjs';
 import {surfacePalette,clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline} from './v7-timeline.mjs';
-import {presentationFrame,openingComposition,nativePlaneFrame,backgroundDarkness,reviewDarkness,sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v12-motion.mjs?v=13';
+import {presentationFrame,openingComposition,nativePlaneFrame,backgroundDarkness,reviewDarkness,sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v12-motion.mjs?v=18';
 const root=document.documentElement,header=document.querySelector('.site-header'),story=document.querySelector('.product-story'),marker=document.querySelector('.product-start'),pin=document.querySelector('.product-pin'),windowEl=document.querySelector('.native-window'),plane=document.querySelector('.native-viewport');
 const intro=document.querySelector('.product-intro'),car=document.querySelector('.hero-car'),host=document.querySelector('#native-host'),fallback=document.querySelector('#native-fallback'),install=document.querySelector('#app-install'),rideNote=document.querySelector('.ride-note'),reviews=document.querySelector('#reviews'),dock=document.querySelector('.mobile-dock'),last=document.querySelector('#last-call');
 const media=matchMedia('(prefers-reduced-motion: reduce)'),forcedReduced=new URL(location.href).searchParams.get('motion')==='reduce',reduced=()=>media.matches||forcedReduced,query={get matches(){return reduced();},addEventListener(...args){media.addEventListener(...args);},removeEventListener(...args){media.removeEventListener(...args);}};
@@ -45,11 +45,12 @@ function setSurface(d){
 }
 function render(){
  if(!layout||disposed)return;
- const geometry=currentGeometry(),input={...geometry,viewport:layout.viewport,storyBottom:geometry.markerTop+layout.storySpan,installTop:layout.installTop-scrollPosition,installHeight:layout.installHeight},timeline=sceneTimeline(input,enhanced),legacy=storyTimeline(input),distance=cursor.snapshot().value*timeline.total,phase=scenePhase(distance,timeline);
- const p=enhanced?phase.drive:clamp(distance/timeline.runway),exit=clamp((distance-timeline.runway)/legacy.exitDistance),installP=reduced()?1:enhanced?phase.handoff:smooth((distance-legacy.installStart)/legacy.installSpan);
- const base=presentationFrame({width:layout.width,height:layout.height,progress:p,ready,reduced:reduced(),opening:layout.opening}),flow=enhanced?flowCoordinates(geometry,distance,phase.screen):{shift:0,pinTop:geometry.pinTop},flowShift=enhanced&&phase.handoff>0?flow.shift:0;
+ const mobile=layout.width<=700;
+ const geometry=currentGeometry(),input={...geometry,viewport:layout.viewport,storyBottom:geometry.markerTop+layout.storySpan,installTop:layout.installTop-scrollPosition,installHeight:layout.installHeight},timeline=sceneTimeline(input,enhanced),legacy=storyTimeline(input),distance=cursor.snapshot().value*timeline.total,phase=scenePhase(distance,timeline,mobile);
+ const p=enhanced?phase.drive:clamp(distance/timeline.runway),exit=clamp((distance-timeline.runway)/legacy.exitDistance),installP=reduced()?1:enhanced?phase.carrier:smooth((distance-legacy.installStart)/legacy.installSpan);
+ const base=presentationFrame({width:layout.width,height:layout.height,progress:p,ready,reduced:reduced(),opening:layout.opening}),flow=enhanced?flowCoordinates(geometry,distance,phase):{shift:0,pinTop:geometry.pinTop},flowShift=flow.shift;
  if(enhanced&&distance>0)base.y+=flow.pinTop-geometry.pinTop;
- const offset=addressOffset(installP,layout.width<=700),destination=layout.destination,end={x:destination.cx+offset.x-destination.width/2,y:geometry.markerTop+destination.cy+offset.y+flowShift-geometry.pinTop-destination.height/2,width:destination.width,height:destination.height,radius:destination.radius,padding:destination.padding},f=enhanced?carrierFrame(base,end,phase.carrier):base;
+ const offset=addressOffset(installP,mobile),destination=layout.destination,end={x:destination.cx+offset.x-destination.width/2,y:geometry.markerTop+destination.cy+offset.y+flowShift-geometry.pinTop-destination.height/2,width:destination.width,height:destination.height,radius:destination.radius,padding:destination.padding},f=enhanced?carrierFrame(base,end,phase.carrier):base;
  const showNative=carrierVisible({enhanced,visible:geometry.markerTop+layout.storySpan>layout.header&&geometry.markerTop<layout.viewport,hidden:document.hidden,screen:phase.screen,top:geometry.pinTop+f.y,height:f.height,viewport:layout.viewport});
  // Update real native pixels once, before the DOM writes below. The render
  // plane's dimensions are fixed through the complete scroll; no resize here.
@@ -58,7 +59,7 @@ function render(){
  plane.style.setProperty('--plane-scale',String(planeFrame.scale));plane.style.setProperty('--plane-x',planeFrame.x+'px');plane.style.setProperty('--plane-y',planeFrame.y+'px');
  install.style.setProperty('--handoff-scroll-offset',flowShift+'px');
  for(const name of['x','y','width','height','radius','padding'])windowEl.style.setProperty('--native-'+name,f[name].toFixed(3)+'px');
- const shadow=layout.width<=700?[13,22,42,.17]:[17,26,57,.18];
+ const shadow=mobile?[13,22,42,.17]:[17,26,57,.18];
  windowEl.style.setProperty('--native-shadow',enhanced&&phase.handoff?shadow[0]*phase.carrier+'px '+shadow[1]*phase.carrier+'px '+shadow[2]*phase.carrier+'px rgba(5,18,8,'+shadow[3]*phase.carrier+')':'0 '+20*(1-f.expand)+'px '+50*(1-f.expand)+'px rgba(5,18,8,'+.19*(1-f.expand)+')');
  windowEl.style.setProperty('--native-rotation',(f.rotation||0)+'deg');windowEl.style.setProperty('--carrier-opacity',String(enhanced&&phase.screen>=1?0:1));windowEl.style.setProperty('--handoff-screen',String(phase.screen));windowEl.setAttribute('aria-hidden',String(enhanced&&phase.screen>=1));windowEl.style.setProperty('--phone-lens-opacity',String(1-smooth(f.expand/.5)));windowEl.style.setProperty('--app-preview-opacity',String(1-smooth((f.expand-.04)/.38)));
  pin.style.setProperty('--scene-expansion',String(f.expand));pin.style.setProperty('--media-lift-y',-(f.lift||0)+'px');pin.style.setProperty('--road-opacity',String(f.car));intro.style.setProperty('--intro-opacity',String(f.intro));intro.style.setProperty('--intro-y',-18*(1-f.intro)+'px');intro.inert=f.intro<.05;
