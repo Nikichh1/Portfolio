@@ -44,17 +44,17 @@ export function createNativeRouteTrack(geometry){
   return {pose:{...geo(point),heading},metric:point,curvature,partIndex:lo,partT:t};
  }
  const rawInitial=position(start).pose;headingOffset=360*Math.round((rawInitial.heading-angle(sub(points[startIndex+1],points[startIndex])))/360);
- const initial=position(start).pose,bearing=30,endpoint={...source.at(-1)};
+ const initial=position(start).pose,bearing=35,endpoint={...source.at(-1)};
  const mercator=p=>({x:(p.lng+180)/360,y:(1-Math.log(Math.tan(p.lat*Math.PI/180)+1/Math.cos(p.lat*Math.PI/180))/Math.PI)/2});
  function project(point,camera,width,height){
   const a=mercator(point),b=mercator({lng:camera.center[0],lat:camera.center[1]}),world=512*2**camera.zoom,dx=(a.x-b.x)*world,dy=(a.y-b.y)*world,r=camera.bearing*Math.PI/180,x=dx*Math.cos(r)+dy*Math.sin(r),y=-dx*Math.sin(r)+dy*Math.cos(r),pitch=camera.pitch*Math.PI/180,focal=height*1.5,denominator=focal-y*Math.sin(pitch);
   return denominator<=0?{x:Infinity,y:Infinity}:{x:width/2+x*focal/denominator,y:height/2+y*Math.cos(pitch)*focal/denominator};
  }
  function overview(frame){
-  return {zoom:19.55,pitch:34,bearing,reference:{width:Math.max(1,Number(frame?.width)||1200),height:Math.max(1,Number(frame?.height)||800)},scope:'restrained local route context',actualEndpoint:{...endpoint},actualEndpointClaimedVisible:false};
+  return {zoom:19.55,pitch:58,bearing,reference:{width:Math.max(1,Number(frame?.width)||1200),height:Math.max(1,Number(frame?.height)||800)},scope:'restrained local route context',actualEndpoint:{...endpoint},actualEndpointClaimedVisible:false};
  }
  function sample(value,width=1200,frame={width,height:800}){
-  const p=clamp(value),distance=length*p,state=position(start+distance),pullback=p>=.6?1:smooth((p-.15)/.45),end=overview(frame),zoom=20.45,focus=position(start+distance+2*smooth(p/.15)).pose,camera={center:[focus.lng,focus.lat],zoom:zoom+(end.zoom-zoom)*pullback,pitch:34,bearing,padding:{top:0,bottom:0,left:0,right:0}};
+  const p=clamp(value),distance=length*p,state=position(start+distance),pullback=p>=.6?1:smooth((p-.15)/.45),end=overview(frame),zoom=20.45,focus=position(start+distance+2*smooth(p/.15)).pose,camera={center:[focus.lng,focus.lat],zoom:zoom+(end.zoom-zoom)*pullback,pitch:58,bearing,padding:{top:0,bottom:0,left:0,right:0}};
   const turns=fillets.filter(f=>Math.abs(f.turnDegrees)>45).map(f=>({distance:(f.start+f.end)/2-start,degrees:f.turnDegrees,progress:clamp((start+distance-f.start)/(f.end-f.start))}));
   return {pose:state.pose,camera,distance,length,start,phase:'continuous-scroll',speedMetresPerProgress:length,curvature:state.curvature,overviewProgress:pullback,endpoint:{...endpoint},overview:end,turns,turnProgress:turns.reduce((sum,turn)=>sum+turn.progress,0)/Math.max(1,turns.length)};
  }
@@ -135,7 +135,7 @@ export async function mountNativePresentation({host,assetBase=new URL('./',impor
    resize(){if(!this.map||!this.loaded)return super.resize();return resize(false);}
    resizeApproved(){return super.resize();}
   }
-  host.dataset.nativeAdapterVersion='v9-continuous-street-local-context-20261110-6';host.dataset.nativeReady='false';host.dataset.nativeStatus=host.dataset.nativeState='loading';
+  host.dataset.nativeAdapterVersion='v10-oblique-continuous-street-20261110-1';host.dataset.nativeReady='false';host.dataset.nativeStatus=host.dataset.nativeState='loading';
   scene=new NativePresentationScene(host,{appearance:'passenger-ride',mode:'navigation',theme:'dark',displayMode:'3d',displayPreferenceKey:'zeleni-site-native-display-only',qualityPreference:'ultra',center:[42.141017,24.749631],zoom:20,request});
   await Promise.race([scene.ready,startDeadline]);
   if(!scene.map)throw new Error('Native 3D is unavailable');map=scene.map;

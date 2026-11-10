@@ -1,0 +1,55 @@
+/* Original passenger destination pin, scoped to the native presentation. */
+#native-host .mobility-destination{position:absolute;width:26px;height:46px;display:flex;flex-direction:column;align-items:center}
+#native-host .mobility-destination b{width:12px;height:12px;border:3px solid #17191b;background:#fff;outline:1px solid #c6c8cb;border-radius:2px}
+#native-host .mobility-destination i{width:1px;height:29px;background:#a7aaae}
+#native-host .mobility-destination span{width:14px;height:5px;border:1px solid #a7aaae;border-radius:50%}
+#native-host .mobility-destination--passenger{width:28px;height:48px;overflow:visible}
+#native-host .mobility-destination--passenger b{width:14px;height:14px;border-radius:3px}
+#native-host .mobility-destination--passenger i{height:28px}
+#native-host .mobility-destination--passenger em{position:absolute;bottom:calc(100% + 4px);left:50%;transform:translateX(-50%);white-space:nowrap;font:600 12px/1 Manrope,sans-serif;font-style:normal;letter-spacing:.02em;color:#e9ecef;background:#17191bde;padding:5px 9px;border-radius:6px;text-shadow:0 1px 2px #000c;box-shadow:0 2px 6px #0006;pointer-events:none}
+#native-host .mobility-destination--passenger em:empty{display:none}
+
+/* One pinned automotive composition, then the same canvas becomes the street. */
+.product-intro{z-index:8;max-width:min(760px,61%);top:48px}
+.product-intro h1{font-size:clamp(56px,6.9vw,96px);line-height:1.08;letter-spacing:-.035em}
+.hero-actions{margin-top:29px}
+.native-window{--native-x:calc(100% - var(--native-width) - 12vw)}
+.hero-visual{position:absolute;inset:0;z-index:6;overflow:clip;pointer-events:none}
+.hero-car{--car-width:min(1088px,76vw);display:block;left:1.5%;top:calc(100svh - 190px - var(--car-width)*.3815);z-index:6}
+.hero-car img{animation-duration:.9s}
+.stage-line{opacity:calc(1 - var(--scene-expansion,0))}
+html:not([data-motion-state]) .product-story{height:auto}
+html:not([data-motion-state]) .product-pin{position:relative;top:0}
+@media(min-width:701px) and (max-height:800px){
+ .product-intro{top:34px;max-width:61%}
+ .product-intro h1{font-size:clamp(50px,5.8vw,76px)}
+ .hero-actions{margin-top:24px}
+ .hero-car{--car-width:min(900px,66vw);top:calc(100svh - 130px - var(--car-width)*.3815)}
+}
+@media(max-width:1000px) and (min-width:701px){
+ .product-intro{top:35px;left:4.5%;max-width:58%}
+ .product-intro h1{font-size:clamp(43px,6.3vw,62px)}
+ .hero-car{--car-width:76vw;left:-2%;top:calc(100svh - 170px - var(--car-width)*.3815)}
+}
+@media(min-width:701px) and (max-height:650px){
+ .product-intro{top:23px;max-width:54%}
+ .product-intro h1{font-size:clamp(29px,3.8vw,42px)}
+ .hero-actions{margin-top:18px}
+ .hero-car{--car-width:49vw;left:0;top:calc(100svh - 90px - var(--car-width)*.3815)}
+}
+@media(max-width:700px){
+ .product-intro{position:absolute;top:24px;left:20px;right:20px;max-width:none;margin:0;padding:0}
+ .product-intro h1{font-size:clamp(32px,10.2vw,44px);line-height:1.11}
+ .hero-actions{margin-top:22px}
+ .native-window{--native-width:min(250px,68%);--native-height:min(600px,max(430px,calc((100svh - var(--header-height)) * .84)));--native-x:calc(100% - var(--native-width) - 20px);--native-y:max(216px,calc((100svh - var(--header-height)) * .30))}
+ .hero-car{--car-width:110vw;display:block;left:-7.5vw;top:calc(66svh - var(--header-height) - 20px)}
+ html[data-reduced-motion=true] .product-pin,html[data-native-presentation=fallback] .product-pin,html:not([data-motion-state]) .product-pin{min-height:calc(100svh + 120px)}
+}
+@media(max-width:350px){
+ .product-intro{left:18px;right:18px;top:22px;padding:0}
+ .hero-actions{margin-top:19px}
+ .hero-car{left:-8.5vw;top:calc(75svh - var(--header-height) - 20px)}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero-car img{animation:none}
+}

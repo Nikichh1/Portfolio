@@ -1,10 +1,11 @@
 import {copy} from './copy.mjs';
 import {createScrollCursor} from './scroll-cursor.mjs';
-import {presentationFrame,surfacePalette,clamp,smooth} from './v6-layout.mjs';
+import {surfacePalette,clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline} from './v7-timeline.mjs';
-import {sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v9-motion.mjs';
+import {presentationFrame,backgroundDarkness,sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v10-motion.mjs';
 
 const root=document.documentElement,header=document.querySelector('.site-header'),story=document.querySelector('.product-story');
+root.dataset.introRevision='v10-photographic-aperture-2';
 const marker=document.querySelector('.product-start'),pin=document.querySelector('.product-pin'),windowEl=document.querySelector('.native-window');
 const intro=document.querySelector('.product-intro'),car=document.querySelector('.hero-car'),host=document.querySelector('#native-host'),fallback=document.querySelector('#native-fallback');
 const install=document.querySelector('#app-install'),rideNote=document.querySelector('.ride-note');
@@ -45,8 +46,9 @@ function render(){
  windowEl.style.setProperty('--carrier-opacity',String(enhanced?1-phase.screen:1));
  windowEl.setAttribute('aria-hidden',String(enhanced&&phase.screen>=1));
  windowEl.style.setProperty('--phone-lens-opacity',String(1-smooth(f.expand/.5)));
- intro.style.setProperty('--intro-opacity',String(f.intro));intro.style.setProperty('--intro-y',`${-32*(1-f.intro)}px`);intro.inert=f.intro<.05;
- car.style.setProperty('--car-opacity',String(f.car));car.style.setProperty('--car-x',`${-70*(1-f.car)}px`);car.style.setProperty('--car-y',`${15*(1-f.car)}px`);
+ pin.style.setProperty('--scene-expansion',String(f.expand));
+ intro.style.setProperty('--intro-opacity',String(f.intro));intro.style.setProperty('--intro-y',`${-18*(1-f.intro)}px`);intro.inert=f.intro<.05;
+ car.style.setProperty('--car-opacity',String(f.car));car.style.setProperty('--car-x',`${-30*(1-f.car)}px`);car.style.setProperty('--car-y',`${8*(1-f.car)}px`);
  const note=ready&&!reduced()?smooth((f.progress-.5)/.12)*(1-smooth((f.progress-.91)/.07))*(1-phase.handoff):0;
  rideNote?.style.setProperty('--ride-note-opacity',String(note));rideNote?.style.setProperty('--ride-note-y',`${14*(1-note)}px`);
  install?.style.setProperty('--install-progress',String(installP));
@@ -56,7 +58,7 @@ function render(){
  // The canvas itself receives the new bounds, rather than scaling a movie.
  const showNative=carrierVisible({enhanced,visible,hidden:document.hidden,screen:phase.screen,top:(geometry?.pinTop||0)+f.y,height:f.height,viewport:innerHeight});
  native?.setVisible(showNative);native?.setProgress(phase.native);native?.resize(showNative&&!nativeActive);nativeActive=showNative;
- setSurface(reduced()?0:smooth((f.progress-.09)/.35)*(1-(enhanced?phase.handoff:smooth(exit))));
+ setSurface(enhanced?backgroundDarkness(f.expand,phase.handoff,reduced()):reduced()?0:smooth((f.progress-.09)/.35)*(1-smooth(exit)));
  root.dataset.appProgress=f.progress.toFixed(5);root.dataset.motionState=cursor.snapshot().active?'active':'idle';root.dataset.motionFrames=String(++frames);root.dataset.motionClock=JSON.stringify(cursor.snapshot());
  root.dataset.nativeExpansion=f.expand.toFixed(5);root.dataset.installProgress=installP.toFixed(5);
  root.dataset.handoffProgress=phase.handoff.toFixed(5);root.dataset.handoffScreen=phase.screen.toFixed(5);
@@ -112,7 +114,7 @@ language(preferred);
 
 // Readiness is a promise/event boundary, never an idle camera polling loop.
 if(new URL(location.href).searchParams.get('graphics')==='off')useFallback();
-else import('./native/presentation.mjs?v=9').then(async({mountNativePresentation})=>{
+else import('./native/presentation.mjs?v=10').then(async({mountNativePresentation})=>{
  const instance=await mountNativePresentation({host,reducedMotion:query});
  if(disposed){instance.dispose();return;}native=instance;sample(true);
  const result=await native.whenReady;if(disposed||result.state==='disposed')return;if(result.state==='fallback'){useFallback();return;}
