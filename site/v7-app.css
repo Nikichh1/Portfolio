@@ -1,0 +1,170 @@
+.app-install {
+  display: grid;
+  grid-template-columns: minmax(280px, .78fr) minmax(0, 1.22fr);
+  align-items: center;
+  gap: clamp(38px, 4.2vw, 80px);
+  padding-top: 62px;
+  padding-bottom: 68px;
+  border-top: 1px solid var(--line);
+  overflow: clip;
+}
+.install-copy { position: relative; z-index: 5; min-width: 0; }
+.install-copy h2 {
+  max-width: 540px;
+  font-size: clamp(38px, 3.6vw, 62px);
+  line-height: 1.16;
+  letter-spacing: -.035em;
+}
+.install-description {
+  max-width: 360px;
+  margin-top: 23px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.85;
+}
+.install-actions {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 31px;
+}
+.install-actions > .button { min-width: 240px; }
+.install-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 44px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+.install-download .arrow { width: 20px; transform: rotate(90deg); }
+.install-download .arrow:before { width: 18px; }
+.install-download:hover { text-decoration-thickness: 2px; }
+.install-platform-note {
+  max-width: 330px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+.install-stage {
+  --install-p: clamp(0, var(--install-progress, 1), 1);
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  height: 720px;
+  contain: layout style;
+}
+.install-phone {
+  position: absolute;
+  width: var(--install-width);
+  margin: 0;
+  transform-origin: 50% 50%;
+}
+.install-phone--address {
+  --install-width: clamp(260px, 19.5vw, 294px);
+  left: 2%;
+  top: 10px;
+  z-index: 2;
+  transform: translate3d(calc(var(--install-p) * -14px), calc((1 - var(--install-p)) * 34px), 0) rotate(-3deg);
+}
+.install-phone--booking {
+  --install-width: clamp(280px, 21.5vw, 310px);
+  left: 46%;
+  top: 62px;
+  z-index: 3;
+  transform: translate3d(calc((1 - var(--install-p)) * 28px), calc((1 - var(--install-p)) * -14px), 0) rotate(3deg);
+}
+.install-device {
+  position: relative;
+  padding: 7px;
+  border-radius: 31px;
+  background: #101612;
+  box-shadow: 17px 26px 57px rgba(5, 18, 8, .18);
+}
+.install-device img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 25px;
+}
+.install-phone figcaption {
+  margin-top: 15px;
+  padding-left: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+@media (max-width: 1250px) and (min-width: 1001px) {
+  .app-install { grid-template-columns: minmax(250px, .75fr) minmax(0, 1.25fr); gap: 28px; }
+  .install-copy h2 { font-size: 40px; }
+  .install-description { max-width: 300px; font-size: 14px; }
+  .install-phone--address { --install-width: 260px; left: 0; }
+  .install-phone--booking { --install-width: 280px; left: 43%; top: 65px; }
+  .install-stage { height: 670px; }
+}
+@media (max-width: 1000px) {
+  .app-install { grid-template-columns: 1fr; gap: 34px; padding-top: 58px; padding-bottom: 55px; }
+  .install-copy { max-width: 660px; }
+  .install-copy h2 { max-width: 640px; font-size: clamp(38px, 5vw, 48px); }
+  .install-description { max-width: 430px; margin-top: 20px; font-size: 14px; }
+  .install-actions { flex-direction: row; align-items: center; flex-wrap: wrap; gap: 4px 29px; margin-top: 25px; }
+  .install-actions > .button { min-width: 230px; }
+  .install-platform-note { max-width: 430px; margin-top: 8px; }
+  .install-stage { height: 700px; }
+  .install-phone--address { --install-width: 280px; left: 6%; top: 0; }
+  .install-phone--booking { --install-width: 300px; left: 48%; top: 55px; }
+}
+@media (max-width: 700px) {
+  .app-install { gap: 24px; padding-top: 46px; padding-bottom: 48px; }
+  .install-copy { max-width: none; }
+  .install-copy h2 { font-size: clamp(32px, 8.5vw, 42px); line-height: 1.18; }
+  .install-description { max-width: 340px; margin-top: 17px; font-size: 13px; line-height: 1.8; }
+  .install-actions { display: flex; flex-direction: row; align-items: center; gap: 3px 24px; margin-top: 23px; }
+  .install-actions > .button { width: 100%; min-width: 0; min-height: 54px; padding: 16px 22px; font-size: 13px; }
+  .install-download { font-size: 12px; }
+  .install-platform-note { max-width: 340px; margin-top: 5px; font-size: 12px; line-height: 1.7; }
+  .install-stage { height: 660px; width: calc(100% + 40px); margin-left: -20px; margin-right: -20px; }
+  .install-phone--address {
+    --install-width: clamp(260px, 70vw, 284px);
+    left: calc(50% - 162px);
+    top: 4px;
+    transform: translate3d(calc(var(--install-p) * -112px), calc((1 - var(--install-p)) * 20px), 0) rotate(-3deg);
+  }
+  .install-phone--booking {
+    --install-width: clamp(260px, 70vw, 284px);
+    left: calc(50% - 102px);
+    top: 65px;
+    transform: translate3d(calc((1 - var(--install-p)) * 145px), calc((1 - var(--install-p)) * 33px), 0) rotate(2deg);
+  }
+  .install-device { padding: 6px; border-radius: 29px; box-shadow: 13px 22px 42px rgba(5, 18, 8, .17); }
+  .install-device img { border-radius: 23px; }
+  .install-phone figcaption { margin-top: 13px; padding-left: 7px; }
+}
+@media (max-width: 350px) {
+  .install-copy h2 { font-size: 29px; }
+  .install-actions > .button { padding-left: 18px; padding-right: 18px; }
+  .install-stage { width: calc(100% + 36px); margin-left: -18px; margin-right: -18px; height: 640px; }
+  .install-phone--address { left: calc(50% - 150px); }
+  .install-phone--booking { left: calc(50% - 108px); top: 57px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .install-phone--address, .install-phone--booking { transform: none; }
+}
+html[data-reduced-motion=true] .install-phone--address,
+html[data-reduced-motion=true] .install-phone--booking { transform: none; }
+@media (max-width: 700px) and (prefers-reduced-motion: reduce) {
+  .install-phone--address { left: -76px; }
+  .install-phone--booking { left: calc(50% - 136px); top: 65px; }
+}
+@media (max-width: 700px) {
+  html[data-reduced-motion=true] .install-phone--address { left: -76px; }
+  html[data-reduced-motion=true] .install-phone--booking { left: calc(50% - 136px); top: 65px; }
+}
+
+@media(max-width:700px){.install-phone--address figcaption{display:none}}

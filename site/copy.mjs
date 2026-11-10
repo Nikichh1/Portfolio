@@ -176,3 +176,31 @@ Object.assign(copy.en,{
   v6JourneyTitle:'Where should\nwe pick you up?',v6AddressTitle:'Choose an address.',v6AddressDescription:'Choose where we should pick you up and where you are going.',v6BookTitle:'Confirm your booking.',v6BookDescription:'Check the route and book from your phone.',v6FollowTitle:'Follow the car.',v6FollowDescription:'See the car approaching your pickup point on the map.',
   v6FleetTitle:'The familiar Zeleni.',v6FleetDescription:'Real photographs of our fleet in Plovdiv.',v6CityCredits:'City photography'
 });
+
+// V7 refines only the invitation and app-install chapter of the approved V6 world.
+Object.assign(copy.bg,{
+  v7InstallHeading:'Поръчай\nот телефона.',
+  v7InstallDescription:'Избери адресите и потвърди поръчката.',
+  v7InstallOpen:'Отвори приложението',
+  v7InstallAndroid:'Изтегли за Android',
+  v7InstallIphone:'На iPhone можеш да го добавиш на началния екран от Safari.',
+  v7InstallAddressAlt:'Избор на адрес в тестовото приложение на Зелени',
+  v7InstallBookingAlt:'Потвърждаване на примерна поръчка в приложението на Зелени',
+  v7InstallAddressCaption:'Посочи адреса.',
+  v7InstallBookingCaption:'Потвърди поръчката.',
+  v7RideNote:'Настани се удобно.',
+  v7RideModel:'Hyundai Ioniq Hybrid'
+});
+Object.assign(copy.en,{
+  v7InstallHeading:'Book from\nyour phone.',
+  v7InstallDescription:'Choose the addresses and confirm your booking.',
+  v7InstallOpen:'Open the app',
+  v7InstallAndroid:'Download for Android',
+  v7InstallIphone:'On iPhone, add it to your Home Screen from Safari.',
+  v7InstallAddressAlt:'Address selection in the Bulgarian Zeleni test app',
+  v7InstallBookingAlt:'Example booking confirmation in the Bulgarian Zeleni app',
+  v7InstallAddressCaption:'Choose an address.',
+  v7InstallBookingCaption:'Confirm your booking.',
+  v7RideNote:'Make yourself comfortable.',
+  v7RideModel:'Hyundai Ioniq Hybrid'
+});
