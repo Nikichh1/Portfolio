@@ -4,7 +4,9 @@ const root = document.documentElement;
 const story = document.querySelector('.drive-story');
 const host = document.querySelector('.scene-host');
 const canvas = document.getElementById('drive-canvas');
-const app = document.getElementById('app');
+const driveActions = document.querySelector('.drive-actions');
+const reviewsHost = document.getElementById('reviews');
+const reviewsCanvas = document.getElementById('reviews-canvas');
 const about = document.getElementById('zeleni');
 const phone = document.querySelector('.phone-scene');
 const dock = document.querySelector('.mobile-dock');
@@ -18,6 +20,13 @@ let desiredProgress = 0;
 let desiredDarkness = 0;
 let sceneVisible = true;
 let previousSurface = '';
+let lastSceneProgress = NaN;
+let lastSceneDarkness = NaN;
+let lastSceneVisible = null;
+let reviews = null;
+let reviewsStarting = false;
+let reviewsVisible = false;
+let lastReviewsVisible = null;
 
 function setLanguage(language) {
   const lang = language === 'en' ? 'en' : 'bg';
@@ -71,10 +80,18 @@ function renderFrame() {
   desiredDarkness=darkness;
   applyBackground(darkness);
   root.style.setProperty('--story-progress',reduced.matches?'0':progress.toFixed(4));
+  root.style.setProperty('--hero-opacity',reduced.matches?'1':(1-smooth((progress-.08)/.3)).toFixed(4));
   const opacity=reduced.matches?1:1-smooth((progress-.84)/.16);
   root.style.setProperty('--scene-opacity',opacity.toFixed(4));
   sceneVisible=bounds.bottom>0&&bounds.top<viewport&&!document.hidden&&opacity>.001;
-  if(scene){scene.setProgress(progress,darkness);scene.setVisible(sceneVisible);}
+  if(scene){
+    if(progress!==lastSceneProgress||darkness!==lastSceneDarkness){scene.setProgress(progress,darkness);lastSceneProgress=progress;lastSceneDarkness=darkness;}
+    if(sceneVisible!==lastSceneVisible){scene.setVisible(sceneVisible);lastSceneVisible=sceneVisible;}
+  }
+  const reviewsBounds=reviewsHost?.getBoundingClientRect();
+  reviewsVisible=Boolean(reviewsBounds&&reviewsBounds.top<viewport&&reviewsBounds.bottom>0&&!document.hidden);
+  if(reviewsBounds&&!reviews&&!reviewsStarting&&reviewsBounds.top<viewport*1.4&&reviewsBounds.bottom>-100)startReviews();
+  if(reviews&&reviewsVisible!==lastReviewsVisible){reviews.setVisible(reviewsVisible);lastReviewsVisible=reviewsVisible;}
   if(!reduced.matches){
     const phoneBounds=phone.getBoundingClientRect();
     const amount=clamp((viewport-phoneBounds.top)/(viewport+phoneBounds.height));
@@ -82,7 +99,12 @@ function renderFrame() {
     phone.style.setProperty('--phone-rotate',`${(-8+amount*9).toFixed(2)}deg`);
     phone.style.setProperty('--phone-tilt',`${(12-amount*13).toFixed(2)}deg`);
   }
-  dock.classList.toggle('dock-hidden',bounds.top>-(viewport*.5)||lastCall.getBoundingClientRect().top<viewport*.85);
+  const actionBounds=driveActions?.getBoundingClientRect();
+  const openingActionsVisible=Boolean(actionBounds&&actionBounds.top>=90&&actionBounds.bottom<=viewport);
+  const dockHidden=openingActionsVisible||lastCall.getBoundingClientRect().top<viewport*.85;
+  dock.classList.toggle('dock-hidden',dockHidden);
+  dock.inert=dockHidden;
+  dock.setAttribute('aria-hidden',String(dockHidden));
 }
 function queueFrame(){if(!queued){queued=true;requestAnimationFrame(renderFrame);}}
 addEventListener('scroll',queueFrame,{passive:true});
@@ -97,9 +119,17 @@ async function startScene(){
   try{
     const {mountScene}=await import('./scene.mjs');
     scene=await mountScene({canvas,host,onReady(){root.dataset.scene='ready';},onError(){root.dataset.scene='fallback';}});
-    if(scene){scene.setProgress(desiredProgress,desiredDarkness);scene.setVisible(sceneVisible);}
+    if(scene){scene.setProgress(desiredProgress,desiredDarkness);scene.setVisible(sceneVisible);lastSceneProgress=desiredProgress;lastSceneDarkness=desiredDarkness;lastSceneVisible=sceneVisible;}
     else root.dataset.scene='fallback';
   }catch{root.dataset.scene='fallback';}
 }
 startScene();
-addEventListener('pagehide',event=>{if(!event.persisted&&scene){scene.dispose();scene=null;}});
+async function startReviews(){
+  reviewsStarting=true;
+  try{
+    const {mountReviews}=await import('./reviews.mjs');
+    reviews=mountReviews({canvas:reviewsCanvas,host:reviewsHost,reducedMotion:reduced});
+    reviews.setVisible(reviewsVisible);lastReviewsVisible=reviewsVisible;
+  }catch{ /* The review link and original Google mark work without the decoration. */ }
+}
+addEventListener('pagehide',event=>{if(!event.persisted){scene?.dispose();reviews?.dispose();scene=null;reviews=null;}});

@@ -15,8 +15,8 @@
   <link rel="icon" type="image/svg+xml" href="/site/assets/zeleni-original-logo.svg">
   <link rel="preload" href="/site/assets/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/site/assets/zeleni-ioniq-original.png" as="image">
-  <link rel="stylesheet" href="/site/experience.css?v=motion2">
-  <script type="module" src="/site/experience.mjs?v=motion2"></script>
+  <link rel="stylesheet" href="/site/experience.css?v=presentation3">
+  <script type="module" src="/site/experience.mjs?v=presentation3"></script>
 </head>
 <body>
   <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -33,7 +33,7 @@
     <a class="brand" href="#main" aria-label="Зелени такси, начало" data-i18n-aria="home"><img src="/site/assets/zeleni-original-logo.svg" width="194" height="38" alt="Зелени такси"><span data-i18n="brandCity">ТАКСИ · ПЛОВДИВ</span></a>
     <nav class="main-nav" aria-label="Основна навигация" data-i18n-aria="navigation">
       <a href="#app" data-i18n="navApp">Приложението</a>
-      <a href="#zeleni" data-i18n="navAbout">За нас</a>
+      <a href="#reviews" data-i18n="navReviews">Отзиви</a>
       <a href="#team" data-i18n="navTeam">Работа при нас</a>
     </nav>
     <div class="header-actions">
@@ -49,17 +49,14 @@
           <canvas id="drive-canvas"></canvas>
           <img class="scene-fallback" src="/site/assets/zeleni-ioniq-original.png" width="1088" height="415" alt="" fetchpriority="high">
         </div>
-        <div class="hero-copy">
-          <h1 id="hero-title"><span data-i18n="heroOne">Такси в</span><span data-i18n="heroTwo">Пловдив.</span></h1>
-          <p class="hero-description" data-i18n="heroDescription">Поръчай през приложението. Ако предпочиташ да говориш с диспечер, обади се на 032 9999.</p>
-          <div class="hero-actions">
-            <a class="button button-dark" href="https://taxi.nikolachavdarov.com/" data-app-link><span data-i18n="orderApp">Поръчай през приложението</span><svg class="icon"><use href="#arrow"/></svg></a>
-            <a class="text-link hero-call" href="tel:+359329999"><svg class="icon"><use href="#phone"/></svg><span data-i18n="callDispatcher">Обади се на диспечер</span></a>
-          </div>
+        <div class="hero-copy"><h1 id="hero-title"><span data-i18n="heroOne">Накъде?</span></h1></div>
+        <div class="drive-actions">
+          <a class="button button-dark" href="https://taxi.nikolachavdarov.com/" data-app-link><span data-i18n="orderApp">Поръчай</span><svg class="icon"><use href="#arrow"/></svg></a>
+          <a class="text-link hero-call" href="tel:+359329999" aria-label="Обади се на диспечер" data-i18n-aria="callDispatcher"><svg class="icon"><use href="#phone"/></svg><span>032 9999</span></a>
         </div>
         <div class="drive-footer">
           <span class="service-area"><svg class="icon"><use href="#pin"/></svg><span data-i18n="serviceArea">Денонощно в Пловдив</span></span>
-          <a class="google-link" href="https://www.google.com/maps/place/?q=place_id:ChIJGxQyuoOEpgsRtBDIO9vjdr0" target="_blank" rel="noopener noreferrer"><span class="google-g" aria-hidden="true">G</span><span data-i18n="googleShort">Оценка и отзиви в Google</span><svg class="icon"><use href="#external"/></svg></a>
+          <a class="google-link" href="https://www.google.com/maps/place/?q=place_id:ChIJGxQyuoOEpgsRtBDIO9vjdr0" target="_blank" rel="noopener noreferrer"><img class="google-mark" src="/site/assets/google/google-g.png" width="60" height="60" alt="" aria-hidden="true"><span data-i18n="googleShort">Отзиви в Google</span><svg class="icon"><use href="#external"/></svg></a>
           <a class="scroll-cue" href="#app"><span data-i18n="seeApp">Виж приложението</span><svg class="icon"><use href="#chevron"/></svg></a>
         </div>
       </div>
@@ -90,7 +87,16 @@
         <p class="fleet-note"><strong data-i18n="hybridTitle">Hyundai Ioniq Hybrid</strong><span data-i18n="hybridDescription">Хибридни автомобили от автопарка на Зелени такси.</span></p>
         <div><a class="dispatcher-band" href="tel:+359329999"><span data-i18n="peopleTitle">Денонощен диспечер</span><strong>032 9999</strong><svg class="icon"><use href="#phone"/></svg></a><p class="outside-city" data-i18n="cityDescription">За адрес извън града се свържи с диспечера.</p></div>
       </div>
-      <div class="review-row"><div class="review-copy"><span class="google-word">Google</span><h3 data-i18n="reviewsTitle">Какво казват пътниците</h3><p data-i18n="reviewsDescription">Прочети отзивите за Зелени такси и виж актуалната оценка в Google.</p></div><a class="round-link" href="https://www.google.com/maps/place/?q=place_id:ChIJGxQyuoOEpgsRtBDIO9vjdr0" target="_blank" rel="noopener noreferrer"><span data-i18n="readReviews">Прочети отзивите</span><svg class="icon"><use href="#external"/></svg></a></div>
+    </section>
+
+    <section class="reviews-section" id="reviews" aria-labelledby="reviews-title">
+      <canvas class="reviews-canvas" id="reviews-canvas" aria-hidden="true"></canvas>
+      <div class="reviews-content">
+        <a class="google-review-launch" href="https://www.google.com/maps/place/?q=place_id:ChIJGxQyuoOEpgsRtBDIO9vjdr0" target="_blank" rel="noopener noreferrer">
+          <img src="/site/assets/google/google-g.png" width="120" height="120" alt="" aria-hidden="true" loading="lazy">
+          <div class="review-heading"><h2 id="reviews-title" data-i18n="reviewsTitle">Отзиви в Google</h2><svg class="icon"><use href="#external"/></svg></div>
+        </a>
+      </div>
     </section>
 
     <section class="team-section" id="team" aria-labelledby="team-title">
@@ -101,10 +107,10 @@
       </div>
     </section>
 
-    <section class="last-call" aria-labelledby="last-title"><h2 id="last-title" data-i18n="lastTitle">Поръчай такси</h2><div><a class="button button-dark" href="https://taxi.nikolachavdarov.com/" data-app-link><span data-i18n="orderApp">Поръчай през приложението</span><svg class="icon"><use href="#arrow"/></svg></a><a class="last-phone" href="tel:+359329999">032 9999<svg class="icon"><use href="#phone"/></svg></a></div></section>
+    <section class="last-call" aria-labelledby="last-title"><h2 id="last-title" data-i18n="lastTitle">Поръчай такси</h2><div><a class="button button-dark" href="https://taxi.nikolachavdarov.com/" data-app-link><span data-i18n="orderApp">Поръчай</span><svg class="icon"><use href="#arrow"/></svg></a><a class="last-phone" href="tel:+359329999">032 9999<svg class="icon"><use href="#phone"/></svg></a></div></section>
   </main>
 
   <footer class="site-footer"><a href="#main" aria-label="Зелени такси, начало" data-i18n-aria="home"><img src="/site/assets/zeleni-original-logo.svg" width="155" height="30" alt="Зелени такси"></a><span data-i18n="footerCity">Такси в Пловдив · 24/7</span><span>© <span id="year">2026</span> <span data-i18n="footerBrand">Зелени такси</span></span></footer>
-  <div class="mobile-dock" aria-label="Поръчай такси" data-i18n-aria="orderTaxi"><a href="tel:+359329999"><svg class="icon"><use href="#phone"/></svg><span>032 9999</span></a><a href="https://taxi.nikolachavdarov.com/" data-app-link><span data-i18n="dockApp">Поръчай онлайн</span><svg class="icon"><use href="#arrow"/></svg></a></div>
+  <div class="mobile-dock dock-hidden" aria-hidden="true" inert aria-label="Поръчай такси" data-i18n-aria="orderTaxi"><a href="tel:+359329999"><svg class="icon"><use href="#phone"/></svg><span>032 9999</span></a><a href="https://taxi.nikolachavdarov.com/" data-app-link><span data-i18n="dockApp">Поръчай онлайн</span><svg class="icon"><use href="#arrow"/></svg></a></div>
 </body>
 </html>
