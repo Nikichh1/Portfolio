@@ -112,3 +112,20 @@ export const copy = {
     dockApp: 'Book online'
   }
 };
+
+// The photographic V4 story keeps the same factual contact and service dictionary.
+Object.assign(copy.bg, {
+ heroOne:'Градът', heroTwo:'те чака.',heroDescription:'За срещата, за вечерта, за пътя до вкъщи. Поръчай Зелени от телефона.',
+ orderTaxi:'Поръчай такси',seeApp:'Виж как става',sunsetAlt:'Панорама на Пловдив при залез',nightAlt:'Нощен трафик в Пловдив',
+ demoLabel:'Демонстрация на приложението',addressAlt:'Избор на адрес в тестовата версия',bookingAlt:'Потвърждаване на примерна поръчка',approachAlt:'Тестов автомобил на път към мястото на вземане',tripAlt:'Примерен курс в приложението',filmLabel:'Запис на примерния курс',
+ demoCaption:'Реални екрани от тестова версия. Примерни маршрут и стойности.',playFilm:'Виж примерния курс',pauseFilm:'Спри записа',
+ stepOne:'Посочи адреса.',stepOneDescription:'Откъде те взимаме и накъде отиваш. Избираш място от търсенето или направо на картата.',stepTwo:'Поръчай. Готово.',stepTwoDescription:'Провери маршрута и потвърди. Когато шофьор приеме, ще видиш колата в приложението.',stepThree:'Вече сме на път.',stepThreeDescription:'Следи как автомобилът се приближава и виж информацията за пътуването.',
+ closingTitle:'Следващата спирка е твоя.',closingDescription:'Приложението е в браузъра на телефона. Диспечерът е на 032 9999.',aboutTitle:'За дните навън. И за пътя обратно.',aboutDescription:'Хибридни автомобили и диспечер по всяко време. Пътуваме в Пловдив, а за адрес извън града можеш да се обадиш.',hybridTitle:'Твоите Зелени.',hybridDescription:'Познатите зелено-бели Hyundai Ioniq Hybrid от нашия автопарк.',peopleTitle:'Предпочиташ да се обадиш?',carCaption:'Оригинален автомобил Hyundai Ioniq Hybrid на Зелени такси',teamTitle:'Карай със Зелени.',teamDescription:'Искаш да се присъединиш към екипа? Обади се на Константин Петров или Андрей Нинов и обсъдете условията.',lastTitle:'Накъде отиваме?',photoCredits:'Фотографии и автори'
+});
+Object.assign(copy.en, {
+ heroOne:'The city',heroTwo:'is waiting.',heroDescription:'For your plans, your evening, your way home. Book Zeleni from your phone.',
+ orderTaxi:'Book a taxi',seeApp:'See how it works',sunsetAlt:'A real sunset panorama of Plovdiv',nightAlt:'Night traffic in Plovdiv',
+ demoLabel:'App demonstration',addressAlt:'Address search in the Bulgarian test app',bookingAlt:'Example booking confirmation in Bulgarian',approachAlt:'Test car approaching the pickup point',tripAlt:'Example trip in the Bulgarian app',filmLabel:'Recording of an example trip',demoCaption:'Real screens from a test version. Example route and values.',playFilm:'Watch the demo',pauseFilm:'Pause recording',
+ stepOne:'Choose an address.',stepOneDescription:'Where should we pick you up, and where are you going? Search for a place or choose it on the map.',stepTwo:'Check. Confirm.',stepTwoDescription:'Review your route and book. Once a driver accepts, you can see the car in the app.',stepThree:'We are on the way.',stepThreeDescription:'Follow the car as it approaches and see your trip information.',
+ closingTitle:'Your next stop.',closingDescription:'The app opens in your phone’s browser. A dispatcher is available on 032 9999.',aboutTitle:'For your day out. And your way home.',aboutDescription:'Hybrid cars and a dispatcher around the clock. We serve Plovdiv. Call us for an address outside the city.',hybridTitle:'Your Zeleni.',hybridDescription:'The familiar green-and-white Hyundai Ioniq Hybrid cars from our fleet.',peopleTitle:'Prefer to call?',carCaption:'Original Zeleni Taxi Hyundai Ioniq Hybrid car',teamTitle:'Drive with Zeleni.',teamDescription:'Interested in joining the team? Call Konstantin Petrov or Andrey Ninov to discuss the details.',lastTitle:'Where are we going?',photoCredits:'Photography and credits'
+});

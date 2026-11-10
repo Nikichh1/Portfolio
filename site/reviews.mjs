@@ -1,4 +1,4 @@
-// Original decorative colour study. No Google/Gemini SDK, network or tracking.
+// Original directed spectrum study. No Google/Gemini SDK, network or tracking.
 // The actual Google mark stays in a separate, unchanged image in the HTML.
 const COLOURS = ['#4285f4', '#ea4335', '#fbbc05', '#34a853', '#35c9e4', '#8b70ea', '#de70c5'];
 const FIELD_COLOURS = [0,4,5,6].map(index => {
@@ -64,13 +64,12 @@ export function mountReviews({canvas, host, reducedMotion}) {
   let pointerX = .5;
   let pointerY = .5;
   let lastPointerStart = -Infinity;
-  const particles = Array.from({length:72}, (_, index) => ({
-    angle:index * 2.399963229728653,
-    orbit:.69 + ((index * 17) % 29) / 100,
-    size:.7 + ((index * 13) % 15) / 12,
-    colour:COLOURS[index % COLOURS.length],
-    alpha:.28 + ((index * 7) % 35) / 100
+  const particles = Array.from({length:220}, (_, index) => ({
+    seed:index * 2.399963229728653,
+    size:.55 + ((index * 13) % 15) / 15,
+    alpha:.24 + ((index * 7) % 35) / 100
   }));
+  canvas.dataset.reviewStyle = 'directed-spectrum';
 
   const canDraw = () => !disposed && requestedVisible && intersecting && !document.hidden;
   function stop(state = 'paused') {
@@ -104,31 +103,86 @@ export function mountReviews({canvas, host, reducedMotion}) {
     context.clearRect(0,0,width,height);
     context.save();
 
-    const swayX = (pointerX-.5) * 9 * activity;
-    const swayY = (pointerY-.5) * 6 * activity;
-    // Small translucent colour fields at the outer edges, not a text backdrop.
-    [0,1,2,3].forEach(index => {
-      const x = width * [.08,.34,.74,.93][index] + Math.sin(value + index) * 10;
-      const y = height * [.19,.88,.12,.77][index];
-      const radius = Math.min(110,Math.max(28,height*.28));
-      const gradient = context.createRadialGradient(x,y,0,x,y,radius);
-      const colour = fieldColour(value,index);
-      gradient.addColorStop(0,`rgba(${colour},.18)`);
-      gradient.addColorStop(1,`rgba(${colour},0)`);
-      context.fillStyle = gradient;
-      context.fillRect(x-radius,y-radius,radius*2,radius*2);
+    const narrow = width < 600;
+    const swayX = (pointerX-.5) * 7 * activity;
+    const swayY = (pointerY-.5) * 5 * activity;
+    const travel = Math.max(0,Math.min(1,1-activity));
+    const head = .18+.58*(1-Math.pow(1-travel,3));
+    const contentBottom = exclusions.reduce((bottom,box) => Math.max(bottom,box.y+box.height),0);
+    const flowY = Math.max(height*.72,Math.min(height*.85,contentBottom+30));
+    const point = t => {
+      const angle = (t-.13)*TAU+Math.sin(value*.28)*.18;
+      const x = width*(-.08+1.16*t)+swayX;
+      const y = flowY+Math.sin(angle)*height*.08+swayY;
+      const dx = width*1.16;
+      const dy = Math.cos(angle)*height*.08*TAU;
+      const length = Math.hypot(dx,dy);
+      return {x,y,tx:dx/length,ty:dy/length,nx:-dy/length,ny:dx/length};
+    };
+    const spectrum = context.createLinearGradient(0,flowY,width,flowY-height*.1);
+    [0,.27,.58,.82,1].forEach((position,index) => {
+      spectrum.addColorStop(position,`rgb(${fieldColour(value*.23,index*.72)})`);
     });
-    const count = width < 600 ? 42 : particles.length;
+    context.fillStyle = spectrum;
+    // One connected ribbon carries a concentrated front and a quieter tail.
+    // Nested translucent widths give it a diffused edge without a large blur.
+    const layers = [[narrow?30:46,.08],[narrow?20:30,.14],[narrow?8:13,.5],[1.8,.9]];
+    for (const [thickness,alpha] of layers) {
+      context.globalAlpha = alpha;
+      context.beginPath();
+      for (let side=0;side<2;side++) {
+        for (let sample=0;sample<=64;sample++) {
+          const t = side ? 1-sample/64 : sample/64;
+          const p = point(t);
+          const energy = .21+.79*Math.exp(-Math.pow((t-head)/.21,2));
+          const edge = Math.pow(Math.max(0,Math.sin(Math.PI*t)),.4);
+          const offset = thickness*energy*edge*(side?-1:1);
+          const x = p.x+p.nx*offset;
+          const y = p.y+p.ny*offset;
+          if (!side&&!sample) context.moveTo(x,y); else context.lineTo(x,y);
+        }
+      }
+      context.closePath();
+      context.fill();
+    }
+    // Small separated responses share the ribbon's left-to-right direction.
+    // These are accents in the composition, not a second cloud or orbit.
+    for (const [start,span,colour] of [[.065,.18,'53,201,228'],[.79,.15,'234,92,131']]) {
+      const cue = context.createLinearGradient(width*start,0,width*(start+span),0);
+      cue.addColorStop(0,`rgba(${colour},0)`);
+      cue.addColorStop(.68,`rgba(${colour},.65)`);
+      cue.addColorStop(1,`rgba(${colour},0)`);
+      context.strokeStyle = cue;
+      context.lineWidth = narrow?2:2.7;
+      context.globalAlpha = .5;
+      context.beginPath();
+      for (let sample=0;sample<=24;sample++) {
+        const t = sample/24;
+        const x = width*(start+t*span);
+        const y = height*(.19+Math.sin(t*Math.PI)*.022)+Math.sin(value*.24)*3;
+        if (!sample) context.moveTo(x,y); else context.lineTo(x,y);
+      }
+      context.stroke();
+    }
+    const count = narrow ? 132 : particles.length;
+    context.lineCap = 'round';
     for (let index=0;index<count;index++) {
       const particle = particles[index];
-      const angle = particle.angle + value * (.18 + (index%3)*.035);
-      const x = width*.5 + Math.cos(angle)*width*.49*particle.orbit + swayX;
-      const y = height*.5 + Math.sin(angle)*height*.47*particle.orbit + Math.sin(angle*3+value)*4 + swayY;
-      context.globalAlpha = particle.alpha;
-      context.fillStyle = particle.colour;
+      const tail = index/(count-1);
+      const t = head-Math.pow(tail,.68)*.7+Math.sin(particle.seed)*.006;
+      if (t<0||t>1) continue;
+      const p = point(t);
+      const spread = Math.sin(particle.seed+value*.21)*(2+tail*(narrow?17:25));
+      const x = p.x+p.nx*spread;
+      const y = p.y+p.ny*spread;
+      const stretch = particle.size+(1-tail)*activity*(narrow?3.5:6);
+      context.globalAlpha = particle.alpha*Math.pow(1-tail,.48);
+      context.strokeStyle = `rgb(${fieldColour(value*.23,t*2.5)})`;
+      context.lineWidth = particle.size;
       context.beginPath();
-      context.arc(x,y,particle.size,0,TAU);
-      context.fill();
+      context.moveTo(x-p.tx*stretch,y-p.ty*stretch);
+      context.lineTo(x+p.tx*stretch,y+p.ty*stretch);
+      context.stroke();
     }
     // Soft elliptical clearance keeps a completely clear content core and
     // fades the surrounding colour smoothly, without rectangular cutouts.
