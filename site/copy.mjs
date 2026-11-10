@@ -136,3 +136,43 @@ Object.assign(copy.bg,{nightAlt:'Зелени такси вечер в Плов�
 Object.assign(copy.en,{nightAlt:'A real Zeleni taxi in Plovdiv at night'});
 Object.assign(copy.bg,{panoramaCredit:'Панорама: Rangel Koldanov · CC BY 4.0',fleetPhotoCredit:'Снимка, предоставена от Зелени'});
 Object.assign(copy.en,{panoramaCredit:'Panorama: Rangel Koldanov · CC BY 4.0',fleetPhotoCredit:'Photo supplied by Zeleni'});
+
+// V5 uses the supplied automotive references and real fleet photography.
+Object.assign(copy.bg,{
+  heroOne:'ПО ТВОЯ',heroTwo:'МАРШРУТ.',heroDescription:'Зелени такси в Пловдив. Поръчай от телефона или се свържи с диспечер.',
+  navFleet:'Автомобилите',seeApp:'Виж приложението',v5HeroModel:'Hyundai Ioniq Hybrid',
+  v5AppTitle:'Твоят курс.',v5ViewsLabel:'Избери екран от приложението',v5ViewTrip:'Курс',v5ViewBooking:'Поръчка',v5ViewAddress:'Адрес',
+  appDescription:'Поръчай и следи колата на картата.',
+  v5TripAlt:'Примерен курс в приложението на Зелени със зеления 3D автомобил и маршрута',
+  demoCaption:'Реален интерфейс с тестови данни. Примерни маршрут и стойности.',v5PlayFilm:'Виж курса',v5FilmUnavailable:'Записът не е наличен.',pauseFilm:'Спри записа',
+  v5FleetTitle:'ЗЕЛЕНИ.\nВ ПЛОВДИВ.',v5FleetDescription:'Нашите Hyundai Ioniq Hybrid. Познатите зелено-бели автомобили, с които пътуваш из града.',
+  photoCredits:'Фотографии и автори'
+});
+Object.assign(copy.en,{
+  heroOne:'YOUR CITY.',heroTwo:'YOUR WAY.',heroDescription:'Zeleni Taxi in Plovdiv. Book from your phone or speak to a dispatcher.',
+  navFleet:'Our cars',seeApp:'See the app',v5HeroModel:'Hyundai Ioniq Hybrid',
+  v5AppTitle:'Your trip.',v5ViewsLabel:'Choose an app screen',v5ViewTrip:'Trip',v5ViewBooking:'Booking',v5ViewAddress:'Address',
+  appDescription:'Book and follow your car on the map.',
+  v5TripAlt:'Example trip in the Bulgarian Zeleni app with the green 3D car and route',
+  demoCaption:'Real interface with test data. Example route and values.',v5PlayFilm:'Watch the trip',v5FilmUnavailable:'Recording unavailable.',pauseFilm:'Pause recording',
+  v5FleetTitle:'ZELENI.\nIN PLOVDIV.',v5FleetDescription:'Our Hyundai Ioniq Hybrid cars. The familiar green-and-white fleet for your trips around the city.',
+  photoCredits:'Photography and credits'
+});
+Object.assign(copy.bg,{v5DemoCredits:'За демонстрацията'});
+Object.assign(copy.en,{v5DemoCredits:'About the demo'});
+
+// V6 is a separate preview until the complete native product scene is reviewed.
+Object.assign(copy.bg,{v6ExampleAddress:'Избор на адрес',v6ExampleBooking:'Примерна поръчка'});
+Object.assign(copy.en,{v6ExampleAddress:'Address search',v6ExampleBooking:'Example booking'});
+Object.assign(copy.bg,{
+  v6HeroOne:'Пътувай',v6HeroTwo:'със Зелени.',v6HeroDescription:'В Пловдив. От телефона или на 032 9999.',
+  v6DemoCaption:'Демонстрация с тестови данни.',v6NativeLabel:'3D демонстрация на приложението с примерен маршрут',v6NativeAlt:'Примерен курс в приложението на Зелени',v6Example:'Примерен курс',v6ViewsLabel:'Избери екран от приложението',v6ViewAddress:'Адрес',v6ViewBooking:'Заявка',v6ViewTrip:'Пътуване',
+  v6JourneyTitle:'Откъде те\nвзимаме?',v6AddressTitle:'Посочи адреса.',v6AddressDescription:'Избери откъде да те вземем и накъде отиваш.',v6BookTitle:'Потвърди поръчката.',v6BookDescription:'Провери маршрута и поръчай от телефона.',v6FollowTitle:'Следи автомобила.',v6FollowDescription:'Виж на картата как колата се приближава.',
+  v6FleetTitle:'Познатите Зелени.',v6FleetDescription:'Реални снимки от нашия автопарк в Пловдив.',v6CityCredits:'Фотографии на града'
+});
+Object.assign(copy.en,{
+  v6HeroOne:'Your ride.',v6HeroTwo:'With Zeleni.',v6HeroDescription:'In Plovdiv. From your phone or on 032 9999.',
+  v6DemoCaption:'Demonstration with test data.',v6NativeLabel:'3D app demonstration with an example route',v6NativeAlt:'Example trip in the Bulgarian Zeleni app',v6Example:'Example trip',v6ViewsLabel:'Choose an app screen',v6ViewAddress:'Address',v6ViewBooking:'Booking',v6ViewTrip:'Trip',
+  v6JourneyTitle:'Where should\nwe pick you up?',v6AddressTitle:'Choose an address.',v6AddressDescription:'Choose where we should pick you up and where you are going.',v6BookTitle:'Confirm your booking.',v6BookDescription:'Check the route and book from your phone.',v6FollowTitle:'Follow the car.',v6FollowDescription:'See the car approaching your pickup point on the map.',
+  v6FleetTitle:'The familiar Zeleni.',v6FleetDescription:'Real photographs of our fleet in Plovdiv.',v6CityCredits:'City photography'
+});

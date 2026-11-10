@@ -1,0 +1,35 @@
+За демонстрацията / About the demo
+
+Кадрите са запис от действителния интерфейс на приложението „Зелени“ в
+изолирана тестова среда. Показан е „Примерен курс“ след качване на пътника:
+3D автомобил, градска сцена, сенки и зелен маршрут до дестинацията.
+Маршрутът, движението, разстоянията и времето за пристигане са примерни.
+Това не е реална поръчка или запис на физическо пътуване.
+
+Записът е направен с Windows Game Bar. Изрязан е само екранът на
+приложението и е оразмерен до 390 × 844 пиксела. Видеото е 8 секунди,
+30 кадъра/секунда, без звук и без генериране на междинни кадри.
+Интерфейсът, автомобилът, картата и движението не са прерисувани.
+
+This is a native screen recording of the actual Zeleni app in an isolated
+test environment. Its existing example ride shows the on-trip 3D car,
+city, shadows and green route after simulated passenger boarding.
+The route, movement, distances and arrival times are synthetic examples,
+not a real booking or physical journey. Only the app screen was cropped
+and resized. No product UI was redrawn and no motion interpolation was used.
+
+Map data and imagery attribution, as identified by the app's map sources:
+
+© OpenStreetMap contributors — https://www.openstreetmap.org/copyright
+ODbL 1.0 — https://opendatacommons.org/licenses/odbl/1-0/
+Extract: Geofabrik — https://download.geofabrik.de/europe/bulgaria.html
+© OpenMapTiles — https://openmaptiles.org/
+OpenFreeMap — https://openfreemap.org/
+АГКК — отворени кадастрални данни, преобразувани — https://kais.cadastre.bg/bg/OpenData
+Overture Maps Foundation / Microsoft ML Buildings — https://docs.overturemaps.org/attribution/#buildings
+Generated using European Union's Copernicus Land Monitoring Service
+information (adapted) — https://land.copernicus.eu/en/data-policy
+
+Some displayed building heights are cartographic estimates, not surveyed
+dimensions. Source attribution does not imply affiliation or endorsement
+by these data providers, Microsoft, or the European Union.
