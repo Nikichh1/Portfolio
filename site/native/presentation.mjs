@@ -88,7 +88,13 @@ export async function mountNativePresentation({host,assetBase=new URL('./',impor
  const sourceContent=new Set(),clock=()=>win.performance?.now?.()??performance.now();
  const whenReady=new Promise(resolve=>{resolveReady=resolve;});
  const startDeadline=new Promise((resolve,reject)=>{rejectStart=reject;});
- const nativeRatio=()=>{const width=Math.max(1,host.clientWidth),height=Math.max(1,host.clientHeight),cap=2-.75*smooth((width-450)/550),raw=Math.min(win.devicePixelRatio||1,cap,Math.sqrt(2000000/(width*height)));return Math.max(1,Math.floor(raw*20+1e-9)/20);};
+ const nativeRatio=()=>{
+  const width=Math.max(1,host.clientWidth),height=Math.max(1,host.clientHeight);
+  const desktopCap=2-.75*smooth((width-450)/550);
+  const cap=width<=700?Math.min(1.65,desktopCap):desktopCap;
+  const raw=Math.min(win.devicePixelRatio||1,cap,Math.sqrt(2000000/(width*height)));
+  return Math.max(1,Math.floor(raw*20+1e-9)/20);
+ };
  const ratioBudget={ratio:nativeRatio,ceiling:nativeRatio,syncNative:nativeRatio,restore:nativeRatio,sample:nativeRatio};
  const effectiveVisible=()=>requestedVisible&&!doc.hidden&&!disposed;
  const transformRequest=url=>{if(url.startsWith('/site/native/'))url=asset(url.slice('/site/native/'.length));const resolved=resolveStatic(url),name=resolved.pathname.slice(base.pathname.length),virtual=/^tiles\/(1[5-9]|2[0-2])\/(\d+)\/(\d+)\.pbf$/.exec(name);if(virtual){const z=Number(virtual[1]),x=Number(virtual[2]),y=Number(virtual[3]),factor=2**(z-14),parent=`tiles/14/${Math.floor(x/factor)}/${Math.floor(y/factor)}.pbf`;if(TILE_NAMES.has(parent)){host.dataset.nativeVirtualTile=name;return {url:resolved.href};}}return {url:nativePath(url)};};

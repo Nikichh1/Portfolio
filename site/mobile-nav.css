@@ -23,12 +23,22 @@
   }
 
   .language-switch > span {
-    display: none;
+    display: grid;
+    width: 6px;
+    place-items: center;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1;
   }
 
   .language-switch button {
-    min-width: 34px;
+    min-width: 28px;
     padding: 0;
+  }
+
+  .language-switch button:focus-visible {
+    outline-offset: -2px;
   }
 
   .mobile-nav-toggle {
