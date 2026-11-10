@@ -2,7 +2,7 @@ import {copy} from './copy.mjs';
 import {createScrollCursor} from './scroll-cursor.mjs';
 import {presentationFrame,surfacePalette,clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline} from './v7-timeline.mjs';
-import {sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v8-motion.mjs';
+import {sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v9-motion.mjs';
 
 const root=document.documentElement,header=document.querySelector('.site-header'),story=document.querySelector('.product-story');
 const marker=document.querySelector('.product-start'),pin=document.querySelector('.product-pin'),windowEl=document.querySelector('.native-window');
@@ -43,7 +43,7 @@ function render(){
  windowEl.style.setProperty('--native-shadow',enhanced&&phase.handoff?`${shadow[0]*phase.carrier}px ${shadow[1]*phase.carrier}px ${shadow[2]*phase.carrier}px rgba(5,18,8,${shadow[3]*phase.carrier})`:`0 ${20*(1-f.expand)}px ${50*(1-f.expand)}px rgba(5,18,8,${.19*(1-f.expand)})`);
  windowEl.style.setProperty('--native-rotation',`${f.rotation||0}deg`);
  windowEl.style.setProperty('--carrier-opacity',String(enhanced?1-phase.screen:1));
- windowEl.setAttribute('aria-hidden',String(enhanced&&phase.screen>=.999));
+ windowEl.setAttribute('aria-hidden',String(enhanced&&phase.screen>=1));
  windowEl.style.setProperty('--phone-lens-opacity',String(1-smooth(f.expand/.5)));
  intro.style.setProperty('--intro-opacity',String(f.intro));intro.style.setProperty('--intro-y',`${-32*(1-f.intro)}px`);intro.inert=f.intro<.05;
  car.style.setProperty('--car-opacity',String(f.car));car.style.setProperty('--car-x',`${-70*(1-f.car)}px`);car.style.setProperty('--car-y',`${15*(1-f.car)}px`);
@@ -55,7 +55,7 @@ function render(){
  install?.style.setProperty('--handoff-copy',String(phase.copy));
  // The canvas itself receives the new bounds, rather than scaling a movie.
  const showNative=carrierVisible({enhanced,visible,hidden:document.hidden,screen:phase.screen,top:(geometry?.pinTop||0)+f.y,height:f.height,viewport:innerHeight});
- native?.setVisible(showNative);native?.setProgress(enhanced?phase.native:base.camera);native?.resize(showNative&&!nativeActive);nativeActive=showNative;
+ native?.setVisible(showNative);native?.setProgress(phase.native);native?.resize(showNative&&!nativeActive);nativeActive=showNative;
  setSurface(reduced()?0:smooth((f.progress-.09)/.35)*(1-(enhanced?phase.handoff:smooth(exit))));
  root.dataset.appProgress=f.progress.toFixed(5);root.dataset.motionState=cursor.snapshot().active?'active':'idle';root.dataset.motionFrames=String(++frames);root.dataset.motionClock=JSON.stringify(cursor.snapshot());
  root.dataset.nativeExpansion=f.expand.toFixed(5);root.dataset.installProgress=installP.toFixed(5);
@@ -73,6 +73,7 @@ function sample(snap=false){
  enhanced=activated&&ready&&!reduced();root.dataset.handoff=enhanced?'active':'ordinary';
  root.style.setProperty('--handoff-overlap',`${pin.clientHeight+h*.35}px`);
  const hh=header.getBoundingClientRect().height,b=story.getBoundingClientRect(),start=marker.getBoundingClientRect().top;
+ host.dataset.presentationViewport=JSON.stringify([pin.clientWidth,pin.clientHeight]);
  const stage=install?.querySelector('.install-stage')?.getBoundingClientRect();
  const input={header:hh,viewport:h,storyBottom:b.bottom,markerTop:start,pinHeight:pin.clientHeight,installTop:stage?.top,installHeight:stage?.height};
  timeline=sceneTimeline(input,enhanced);
@@ -111,7 +112,7 @@ language(preferred);
 
 // Readiness is a promise/event boundary, never an idle camera polling loop.
 if(new URL(location.href).searchParams.get('graphics')==='off')useFallback();
-else import('./native/presentation.mjs?v=8').then(async({mountNativePresentation})=>{
+else import('./native/presentation.mjs?v=9').then(async({mountNativePresentation})=>{
  const instance=await mountNativePresentation({host,reducedMotion:query});
  if(disposed){instance.dispose();return;}native=instance;sample(true);
  const result=await native.whenReady;if(disposed||result.state==='disposed')return;if(result.state==='fallback'){useFallback();return;}

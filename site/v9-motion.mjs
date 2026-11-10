@@ -1,8 +1,8 @@
 import {clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline as previousTimeline} from './v7-timeline.mjs';
 
-// The existing driving distance is followed by one occupied handoff viewport.
-// The normal-flow handset is the endpoint of the same native carrier.
+// The handset handoff and the moving car share the whole visible story clock.
+// The car never reaches an internal stop before its native carrier disappears.
 export function sceneTimeline(input,enhanced=true){
  if(!enhanced){const t=previousTimeline(input);return {...t,originalRunway:t.runway,driveRunway:t.runway,tailSpan:0,handoffSpan:0};}
  const {header,viewport,storyBottom,markerTop,pinHeight}=input;
@@ -14,7 +14,7 @@ export function sceneTimeline(input,enhanced=true){
 }
 export function scenePhase(distance,timeline){
  const originalRunway=timeline.originalRunway||timeline.driveRunway,drive=clamp(distance/originalRunway);
- const native=distance<=originalRunway?.84*smooth((drive-.18)/.82):.84+.16*clamp((distance-originalRunway)/(timeline.tailSpan||1));
+ const native=clamp(distance/timeline.runway);
  const handoff=timeline.handoffSpan?clamp(smooth((distance-timeline.driveRunway)/timeline.handoffSpan)):0;
  return {drive,native,handoff,carrier:clamp(smooth(handoff/.86)),screen:clamp(smooth((handoff-.86)/.14)),booking:clamp(smooth((handoff-.02)/.38)),copy:clamp(smooth((handoff-.55)/.12))};
 }
@@ -28,7 +28,7 @@ export function flowCoordinates({header,markerTop,storySpan,pinHeight},distance,
  return {shift,pinTop};
 }
 export function carrierVisible({enhanced,visible,hidden,screen,top,height,viewport}){
- return !hidden&&(enhanced?screen<.999&&top+height>0&&top<viewport:visible);
+ return !hidden&&(enhanced?screen<1&&top+height>0&&top<viewport:visible);
 }
 export function carrierFrame(start,destination,handoff){
  const frame={...start},mix=(a,b)=>a+(b-a)*handoff;
