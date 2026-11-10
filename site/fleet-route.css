@@ -1,0 +1,101 @@
+.fleet-section {
+  position: relative;
+}
+
+.fleet-section .fair-photo > img {
+  width: 73%;
+}
+
+.fleet-section .fleet-night-row {
+  margin-top: clamp(64px, 6vw, 104px);
+}
+
+.fleet-section .fleet-night-row .hospital-photo {
+  width: min(79%, 1200px);
+}
+
+.fleet-route {
+  position: absolute;
+  overflow: visible;
+  pointer-events: none;
+  --route-progress: 1;
+}
+
+.fleet-route[hidden] {
+  display: none;
+}
+
+.fleet-route path,
+.fleet-route use {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fleet-route__streets {
+  stroke: #436653;
+  stroke-opacity: .18;
+  stroke-width: 1;
+}
+
+.fleet-route__track {
+  stroke: #31543e;
+  stroke-opacity: .18;
+  stroke-width: 3;
+}
+
+.fleet-route__glow,
+.fleet-route__edge,
+.fleet-route__line,
+.fleet-route__core {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: calc(1 - var(--route-progress));
+  opacity: clamp(0, calc(var(--route-progress) * 100), 1);
+}
+
+.fleet-route__glow {
+  stroke: #74ff99;
+  stroke-width: 13;
+  stroke-opacity: .27;
+}
+
+.fleet-route__edge {
+  stroke: #17412b;
+  stroke-width: 6;
+}
+
+.fleet-route__line {
+  stroke: #a1ff79;
+  stroke-width: 3.6;
+}
+
+.fleet-route__core {
+  stroke: #dfffcc;
+  stroke-width: 1;
+}
+
+.fleet-route__destination {
+  opacity: clamp(.35, calc((var(--route-progress) - .91) * 9), 1);
+}
+
+@media (max-width: 700px) {
+  .fleet-section .fair-photo > img {
+    width: 100%;
+  }
+
+  .fleet-section .fleet-night-row {
+    margin-top: 79px;
+  }
+
+  .fleet-section .fleet-night-row .hospital-photo {
+    width: calc(100% - 38px);
+  }
+
+  .fleet-route__glow {
+    stroke-width: 11;
+  }
+
+  .fleet-route__edge {
+    stroke-width: 5.5;
+  }
+}
