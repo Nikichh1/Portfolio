@@ -4,8 +4,9 @@ const smooth=value=>{const t=clamp(value);return t*t*t*(t*(t*6-15)+10);};
 const TILE_NAMES=new Set(Array.from({length:3},(_,x)=>Array.from({length:3},(_,y)=>`tiles/14/${9317+x}/${6072+y}.pbf`)).flat());
 const ASSET_NAMES=new Set(['tilejson.json','route.json','environment.geojson','canopy.geojson','model.glb','build/map-worker.js','build/building-mesh-worker.js','build/building-shadow-worker.js']);
 
-/** Pure, distance-based camera track. Geometry stays on the supplied streets;
- * only the heading and camera approach are eased across the mapped corners. */
+/** The exact original V6 pose/camera phase, followed by one short street tail.
+ * The owner maps the original scroll phase to [0,.84]; no V6 frame is retimed
+ * inside this adapter. Only the appended final phase travels beyond its end. */
 export function createNativeRouteTrack(geometry){
  if(!Array.isArray(geometry)||geometry.length<4||geometry.some(point=>!Array.isArray(point)||point.length<2||!point.slice(0,2).every(Number.isFinite)))throw new TypeError('A finite demonstration route is required');
  const coordinates=geometry.map(([lat,lng])=>[lng,lat]),distances=[0],headings=[];
@@ -14,16 +15,34 @@ export function createNativeRouteTrack(geometry){
   distances.push(distances.at(-1)+Math.hypot(east,north)*111320);
   const angle=Math.atan2(east,north)*180/Math.PI,previous=headings.at(-1);headings.push(previous===undefined?angle:previous+((angle-previous+540)%360+360)%360-180);
  }
- const initialIndex=Math.floor(.08*(coordinates.length-2)),start=distances[initialIndex],length=Math.min(190,distances.at(-1)-start),headingChanges=headings.slice(1).map((heading,i)=>({distance:distances[i+1],delta:heading-headings[i]}));
+ const total=distances.at(-1),initialIndex=Math.floor(.08*(coordinates.length-2)),start=distances[initialIndex],routeStart=start/total,originalLength=(routeStart+.02)*total-start,originalPhaseEnd=.84,tailBearingDelay=6,headingChanges=headings.slice(1).map((heading,i)=>({distance:distances[i+1],delta:heading-headings[i]}));
  const pointAt=distance=>{const d=Math.max(0,Math.min(distances.at(-1),distance));let i=1;while(i<distances.length-1&&distances[i]<d)i++;const t=(d-distances[i-1])/Math.max(.001,distances[i]-distances[i-1]),a=coordinates[i-1],b=coordinates[i];return{lng:a[0]+(b[0]-a[0])*t,lat:a[1]+(b[1]-a[1])*t};};
- const initial=pointAt(start),ahead=pointAt(start+6),initialHeading=Math.atan2((ahead.lng-initial.lng)*Math.cos(initial.lat*Math.PI/180),ahead.lat-initial.lat)*180/Math.PI;
- const easedHeading=distance=>headings[0]+headingChanges.reduce((sum,turn)=>sum+turn.delta*smooth((distance-turn.distance+6)/12),0),headingOrigin=easedHeading(start),headingShift=360*Math.round((headingOrigin-initialHeading)/360),initialBias=initialHeading-(headingOrigin-headingShift);
+ // Preserve V6's original six-metre lookahead and arithmetic order exactly.
+ const routeSampler=p=>{const d=p*total,point=pointAt(d),b=pointAt(d+6);return{...point,heading:Math.atan2((b.lng-point.lng)*Math.cos(point.lat*Math.PI/180),b.lat-point.lat)*180/Math.PI};};
+ const firstTurn=headingChanges.find(turn=>Math.abs(turn.delta)>45&&turn.distance>start),length=Math.min(total-start,Math.max(originalLength,firstTurn?firstTurn.distance-start+8.5:originalLength));
  const turns=headingChanges.filter(turn=>Math.abs(turn.delta)>45&&turn.distance>start&&turn.distance<start+length).map(turn=>({distance:turn.distance-start,degrees:turn.delta}));
- function sample(value,width=1200){
-  const p=clamp(value),distance=Math.min(length,(20*smooth(p/.28)+170*smooth((p-.16)/.84))*length/190),point=pointAt(start+distance),heading=easedHeading(start+distance)-headingShift+initialBias*(1-smooth(distance/14)),pose={...point,heading},orbit=smooth(p/.28),open=smooth((p-.58)/.42),lift=Math.sin(Math.PI*orbit),cornerLift=turns.reduce((sum,turn,i)=>sum+(i?18:10)*smooth((distance-(turn.distance-(i?18:14)))/10)*(1-smooth((distance-(turn.distance+(i?10:5)))/(i?14:12))),0),pitch=58-20*lift-4*smooth(p/.4)-4*open-cornerLift,baseZoom=20.45+.5*smooth((width-350)/550),actualTurns=turns.map(turn=>({...turn,progress:smooth((distance-turn.distance+6)/12)}));
-  return {pose,camera:{center:[pose.lng,pose.lat],zoom:baseZoom-1.55*open,pitch,bearing:pose.heading+145-165*orbit,padding:{top:0,bottom:0,left:0,right:0}},distance,length,turnProgress:actualTurns.reduce((sum,turn)=>sum+turn.progress,0)/Math.max(1,actualTurns.length),turns:actualTurns};
+ function cameraFor(pose,p,width){
+  const turn=smooth(p/.56),open=smooth((p-.48)/.52),lift=Math.sin(Math.PI*turn),baseZoom=20.45+.5*smooth((width-350)/550);
+  return {center:[pose.lng,pose.lat],zoom:baseZoom-1.55*open,pitch:58-20*lift-8*open,bearing:pose.heading+145-180*turn,padding:{top:0,bottom:0,left:0,right:0}};
  }
- return {sample,length,start,turns};
+ function result(pose,camera,distance,originalProgress,phase){
+  const actualTurns=turns.map(turn=>({...turn,progress:smooth((distance-turn.distance+6)/6)}));
+  return {pose,camera,distance,length,originalLength,originalPhaseEnd,tailBearingDelay,originalProgress,phase,turnProgress:actualTurns.reduce((sum,turn)=>sum+turn.progress,0)/Math.max(1,actualTurns.length),turns:actualTurns};
+ }
+ function sampleOriginal(value,width=1200){
+  const p=clamp(value),pose=routeSampler(routeStart+.02*smooth(p)),distance=Math.max(0,(routeStart+.02*smooth(p))*total-start);
+  return result(pose,cameraFor(pose,p,width),distance,p,'original-v6');
+ }
+ function sample(value,width=1200){
+  const p=clamp(value);
+  if(p<=originalPhaseEnd)return sampleOriginal(p/originalPhaseEnd,width);
+  const distance=originalLength+(length-originalLength)*smooth((p-originalPhaseEnd)/(1-originalPhaseEnd)),pose=routeSampler((start+distance)/total),camera=cameraFor(pose,1,width),cameraPose=distance<=originalLength+tailBearingDelay?sampleOriginal(1,width).pose:routeSampler((start+distance-tailBearingDelay)/total);
+  // Only the new tail delays heading: keep the exact V6 ending view until the
+  // physical corner, instead of aiming through its building six metres early.
+  camera.bearing=cameraPose.heading+145-180;
+  return result(pose,camera,distance,1,'short-tail');
+ }
+ return {sample,sampleOriginal,length,originalLength,originalPhaseEnd,tailBearingDelay,start,turns};
 }
 
 /**
@@ -86,7 +105,7 @@ export async function mountNativePresentation({host,assetBase=new URL('./',impor
    resize(){if(!this.map||!this.loaded)return super.resize();return resize(false);}
    resizeApproved(){return super.resize();}
   }
-  host.dataset.nativeAdapterVersion='v7-two-corners-190m-20261110-1';host.dataset.nativeReady='false';host.dataset.nativeStatus=host.dataset.nativeState='loading';
+  host.dataset.nativeAdapterVersion='v8-original-v6-short-tail-20261110-2';host.dataset.nativeReady='false';host.dataset.nativeStatus=host.dataset.nativeState='loading';
   scene=new NativePresentationScene(host,{appearance:'passenger-ride',mode:'navigation',theme:'dark',displayMode:'3d',displayPreferenceKey:'zeleni-site-native-display-only',qualityPreference:'ultra',center:[42.141017,24.749631],zoom:20,request});
   await Promise.race([scene.ready,startDeadline]);
   if(!scene.map)throw new Error('Native 3D is unavailable');map=scene.map;
