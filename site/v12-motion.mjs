@@ -18,6 +18,14 @@ export function backgroundDarkness(expansion,handoff,reduced=false){
  return reduced?0:smooth((expansion-.04)/.70)*(1-smooth((handoff-.18)/.44));
 }
 
+// The review chapter shares the page surface, including the sticky header.
+// Cached document bounds make the light/night/light passage independent of
+// the native journey and require no per-scroll DOM measurement.
+export function reviewDarkness({top,height,viewport,header=0}){
+ const span=Math.max(1,viewport*.55);
+ return smooth((viewport-top)/span)*smooth((top+height-header)/span);
+}
+
 // The handset handoff and the moving car share the whole visible story clock.
 // The car never reaches an internal stop before its native carrier disappears.
 export function sceneTimeline(input,enhanced=true){

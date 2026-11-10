@@ -1,23 +1,17 @@
-// Original directed spectrum study. No Google/Gemini SDK, network or tracking.
+// Original fine-point light study. No Google/Gemini SDK, network or tracking.
 // The actual Google mark stays in a separate, unchanged image in the HTML.
-const COLOURS = ['#4285f4', '#ea4335', '#fbbc05', '#34a853', '#35c9e4', '#8b70ea', '#de70c5'];
-const RGB_COLOURS = COLOURS.map(hex => {
-  return [parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)];
-});
-const FIELD_COLOURS = [0,4,5,6,1,2,3].map(index => RGB_COLOURS[index]);
-const TAU = Math.PI * 2;
+const FIELD_COLOURS = [[242,62,171],[142,71,239],[20,98,255]];
 const BURST_MS = 1550;
 const MAX_BURST_FRAMES = 180;
 const CLOCK_FALLBACK_MS = 1000 / 60;
-const PARTICLE_COUNT = 120;
-const MOBILE_PARTICLES = 76;
+const POINT_BUDGET = 3200;
+const MOBILE_POINTS = 2400;
 
-function fieldColour(phase, index) {
-  const safePhase = Number.isFinite(phase) ? Math.max(0,phase) : 0;
-  const position = (safePhase*.65+index) % FIELD_COLOURS.length;
-  const step = Math.floor(position);
+function fieldColour(horizontal) {
+  const position = Math.max(0,Math.min(1,horizontal))*(FIELD_COLOURS.length-1);
+  const step = Math.min(FIELD_COLOURS.length-2,Math.floor(position));
   const from = FIELD_COLOURS[step];
-  const to = FIELD_COLOURS[(step+1) % FIELD_COLOURS.length];
+  const to = FIELD_COLOURS[step+1];
   return from.map((channel,channelIndex) => Math.round(channel+(to[channelIndex]-channel)*(position-step))).join(',');
 }
 
@@ -63,15 +57,11 @@ export function mountReviews({canvas, host, reducedMotion}) {
   let height = 1;
   let scale = 1;
   let exclusions = [];
+  let capsule = {x:0,y:0,width:1,height:1};
   let pointerX = .5;
   let pointerY = .5;
   let lastPointerStart = -Infinity;
-  const particles = Array.from({length:PARTICLE_COUNT}, (_, index) => ({
-    seed:index * 2.399963229728653,
-    size:1.2 + ((index * 13) % 15) / 10,
-    alpha:.4 + ((index * 7) % 35) / 100
-  }));
-  canvas.dataset.reviewStyle = 'directed-edge-orbits';
+  canvas.dataset.reviewStyle = 'fine-diamond-wave';
 
   const canDraw = () => !disposed && requestedVisible && intersecting && !document.hidden;
   function stop(state = 'paused') {
@@ -90,9 +80,16 @@ export function mountReviews({canvas, host, reducedMotion}) {
       canvas.width = pixelWidth;
       canvas.height = pixelHeight;
     }
-    // Text, interactive controls and logos always have a clear canvas behind
-    // them; the particles occupy the surrounding space, never the letterforms.
+    const target = host.querySelector?.('.google-review-launch');
+    const targetBounds = target?.getBoundingClientRect();
+    capsule = targetBounds?.width > 0 && targetBounds?.height > 0
+      ? {x:targetBounds.left-bounds.left,y:targetBounds.top-bounds.top,width:targetBounds.width,height:targetBounds.height}
+      : {x:(width-Math.min(700,width-36))/2,y:(height-(width<600?84:104))/2,width:Math.min(700,Math.max(1,width-36)),height:width<600?84:104};
+    // The opaque capsule and its exact clearance protect the review action.
+    // Other content retains its soft mask; masking the logo's transparent
+    // image box again would push the point band away from the capsule rim.
     exclusions = Array.from(host.querySelectorAll('[data-review-protect],h1,h2,h3,p,a,button,img'))
+      .filter(element => !target || (element !== target && !target.contains(element)))
       // Protect the actual content, not a large anchor wrapping that content.
       .filter(element => !element.matches('a,button') || element.matches('[data-review-protect]') ||
         !element.querySelector('h1,h2,h3,p,img,[data-review-protect]'))
@@ -105,46 +102,54 @@ export function mountReviews({canvas, host, reducedMotion}) {
     context.clearRect(0,0,width,height);
     context.save();
 
-    const narrow = width < 600, strength = isReduced() ? .52 : 1;
-    const swayX = (pointerX-.5)*7*activity, swayY = (pointerY-.5)*5*activity;
-    const orbit = (t, lane=0) => {
-      const angle = TAU*(t+value*.075*(lane?-1:1));
-      const rx=width*(lane?.55:.51),ry=height*(lane?.35:.45);
-      const dx=-rx*Math.sin(angle),dy=ry*Math.cos(angle),length=Math.hypot(dx,dy)||1;
-      return {x:width*.5+rx*Math.cos(angle)+swayX,y:height*(lane?.54:.50)+ry*Math.sin(angle)+swayY,tx:dx/length,ty:dy/length};
-    };
-    // Four authentic Google colours anchor the edges; cyan/violet transitions
-    // connect them. The unchanged content mask below clears the entire core.
-    const glowRadius=Math.min(width*.43,height*.88);
-    for(const [x,y,index]of [[.08,.12,0],[.94,.25,1],[.84,.94,2],[.13,.91,3]]){
-      const cx=width*x+swayX,cy=height*y+swayY,colour=RGB_COLOURS[index].join(','),glow=context.createRadialGradient(cx,cy,0,cx,cy,glowRadius);
-      glow.addColorStop(0,`rgba(${colour},.36)`);glow.addColorStop(.45,`rgba(${colour},.18)`);glow.addColorStop(1,`rgba(${colour},0)`);
-      context.globalAlpha=strength;context.fillStyle=glow;context.fillRect(cx-glowRadius,cy-glowRadius,glowRadius*2,glowRadius*2);
+    const narrow = width < 600, strength = isReduced() ? .6 : 1;
+    const cx=capsule.x+capsule.width/2,cy=capsule.y+capsule.height/2;
+    const radius=capsule.height/2,halfWidth=Math.max(0,capsule.width/2-radius);
+    const envelopeX=narrow?Math.min(width*.59,capsule.width/2+height*.46):Math.min(width*.49,capsule.width/2+140);
+    const envelopeY=narrow?Math.min(height*.49,capsule.height/2+height*.31):Math.min(height*.44,capsule.height/2+118);
+    // Only a little light spills from the two capsule edges. The points carry
+    // the colour: no paths, orbit tracks or shaded spheres sit behind them.
+    const glowRadius=Math.min(width*.27,height*.30);
+    for(const [side,colour]of [[-1,FIELD_COLOURS[0]],[1,FIELD_COLOURS[2]]]){
+      const x=cx+side*(capsule.width/2-18),glow=context.createRadialGradient(x,cy,0,x,cy,glowRadius);
+      glow.addColorStop(0,`rgba(${colour.join(',')},.27)`);glow.addColorStop(1,`rgba(${colour.join(',')},0)`);
+      context.globalAlpha=strength;context.fillStyle=glow;context.fillRect(x-glowRadius,cy-glowRadius,glowRadius*2,glowRadius*2);
     }
-    const spectrum=context.createLinearGradient(0,0,width,height);
-    [0,.16,.34,.5,.67,.84,1].forEach((position,index)=>spectrum.addColorStop(position,`rgb(${fieldColour(value*.08,index)})`));
-    context.lineCap='round';context.strokeStyle=spectrum;
-    for(let lane=0;lane<2;lane++)for(const [thickness,alpha]of [[narrow?20:30,.16],[narrow?7:10,.42],[narrow?1.5:2,.68]]){
-      context.lineWidth=thickness;context.globalAlpha=alpha*strength*(lane?.65:1);context.beginPath();
-      for(let sample=0;sample<=72;sample++){const p=orbit(sample/72,lane);if(!sample)context.moveTo(p.x,p.y);else context.lineTo(p.x,p.y);}context.stroke();
+    // A regular staggered lattice is deformed by one coherent, shallow wave.
+    // The fixed horizontal spectrum never rotates through unrelated colours.
+    const budget=narrow?MOBILE_POINTS:POINT_BUDGET,spacing=narrow?8:11;
+    // On wide screens rasterize the envelope itself, not unused host margins.
+    // This keeps its fine matrix dense without increasing the point budget.
+    const left=narrow?0:Math.max(0,cx-envelopeX),top=narrow?0:Math.max(0,cy-envelopeY);
+    const fieldWidth=narrow?width:Math.min(width,cx+envelopeX)-left,fieldHeight=narrow?height:Math.min(height,cy+envelopeY)-top;
+    let columns=Math.ceil(fieldWidth/spacing)+1,rows=Math.ceil(fieldHeight/spacing)+1;
+    if(columns*rows>budget){const shrink=Math.sqrt(budget/(columns*rows));columns=Math.max(2,Math.floor(columns*shrink));rows=Math.max(2,Math.floor(rows*shrink));}
+    const stepX=fieldWidth/(columns-1),stepY=fieldHeight/(rows-1),diagonal=scale/Math.SQRT2;
+    const sway=(pointerX-.5)*activity*.12+(pointerY-.5)*activity*.08;
+    context.setTransform(diagonal,diagonal,-diagonal,diagonal,0,0);
+    let pointCount=0;
+    for(let column=0;column<columns;column++){
+      context.fillStyle=`rgb(${fieldColour(column/(columns-1))})`;
+      for(let row=0;row<rows;row++){
+        const baseX=left+column*stepX+(row%2)*stepX*.5,baseY=top+row*stepY;
+        const x=baseX+Math.sin(baseY/height*5+value*.3)*stepX*.18;
+        const y=baseY+Math.sin(baseX/width*5.4+value*.45+sway)*height*.017;
+        const outer=1-((x-cx)/envelopeX)**2-((y-cy)/envelopeY)**2;
+        if(outer<=0)continue;
+        const qx=Math.abs(x-cx)-halfWidth,qy=Math.abs(y-cy);
+        const clearance=Math.hypot(Math.max(qx,0),qy)-radius;
+        if(clearance<4)continue;
+        const edge=Math.exp(-((clearance/(height*.22))**2));
+        const light=.84+.16*Math.sin(baseX/width*4.2-baseY/height*2.4-value*.9);
+        const alpha=strength*Math.pow(outer,narrow?.35:.30)*(.25+.75*edge)*light;
+        const size=narrow?.78+1.16*edge:1+1.9*edge,u=(x+y)/Math.SQRT2,v=(y-x)/Math.SQRT2;
+        context.globalAlpha=alpha;context.fillRect(u-size/2,v-size/2,size,size);pointCount++;
+      }
     }
-    const count=narrow?MOBILE_PARTICLES:particles.length;
-    canvas.dataset.reviewParticles=String(count);
-    for(let index=0;index<count;index++){
-      const particle=particles[index],lane=index%2,t=(index/count+Math.sin(particle.seed)*.012+1)%1,p=orbit(t,lane),spread=Math.sin(particle.seed+value*.2)*4,x=p.x-p.ty*spread,y=p.y+p.tx*spread,stretch=particle.size+activity*(narrow?2.5:4);
-      context.globalAlpha=particle.alpha*strength;context.strokeStyle=`rgb(${fieldColour(value*.08,t*7)})`;context.lineWidth=particle.size;
-      context.beginPath();context.moveTo(x-p.tx*stretch,y-p.ty*stretch);context.lineTo(x+p.tx*stretch,y+p.ty*stretch);context.stroke();
-    }
-    const orbCount=narrow?4:6;
-    canvas.dataset.reviewOrbs=String(orbCount);
-    for(let index=0;index<orbCount;index++){
-      const p=orbit([.04,.23,.43,.62,.78,.92][index],index%2),radius=(narrow?7:10)+(index*7%10),colour=RGB_COLOURS[index].join(','),halo=context.createRadialGradient(p.x,p.y,0,p.x,p.y,radius*3.2);
-      halo.addColorStop(0,`rgba(${colour},.42)`);halo.addColorStop(.4,`rgba(${colour},.2)`);halo.addColorStop(1,`rgba(${colour},0)`);
-      context.globalAlpha=strength;context.fillStyle=halo;context.beginPath();context.arc(p.x,p.y,radius*3.2,0,TAU);context.fill();
-      const sphere=context.createRadialGradient(p.x-radius*.28,p.y-radius*.3,radius*.04,p.x,p.y,radius);
-      sphere.addColorStop(0,'rgba(255,255,255,.98)');sphere.addColorStop(.22,`rgba(${colour},.98)`);sphere.addColorStop(.72,`rgba(${colour},.84)`);sphere.addColorStop(1,`rgba(${colour},0)`);
-      context.fillStyle=sphere;context.beginPath();context.arc(p.x,p.y,radius,0,TAU);context.fill();
-    }
+    canvas.dataset.reviewPoints=String(pointCount);
+    canvas.dataset.reviewGridPoints=String(columns*rows);
+    canvas.dataset.reviewPointBudget=String(budget);
+    canvas.dataset.reviewPointSpacing=Math.max(stepX,stepY).toFixed(2);
     // Soft elliptical clearance keeps a completely clear content core and
     // fades the surrounding colour smoothly, without rectangular cutouts.
     context.globalAlpha = 1;
