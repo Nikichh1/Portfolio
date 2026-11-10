@@ -239,3 +239,7 @@ Object.assign(copy.en,{
   rights:'All rights reserved.',brandName:'ZELENI TAXI',footerBrand:'ZELENI TAXI',
   dockInstall:'Get ZELENI TAXI'
 });
+
+// V14: the reviews action is separate from its heading.
+Object.assign(copy.bg,{readReviews:"Прочети отзивите"});
+Object.assign(copy.en,{readReviews:"Read the reviews"});

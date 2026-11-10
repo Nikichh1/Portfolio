@@ -80,22 +80,27 @@ export function mountReviews({canvas, host, reducedMotion}) {
       canvas.width = pixelWidth;
       canvas.height = pixelHeight;
     }
-    const target = host.querySelector?.('.google-review-launch');
+    const target = host.querySelector?.('.review-presentation');
     const targetBounds = target?.getBoundingClientRect();
     capsule = targetBounds?.width > 0 && targetBounds?.height > 0
       ? {x:targetBounds.left-bounds.left,y:targetBounds.top-bounds.top,width:targetBounds.width,height:targetBounds.height}
-      : {x:(width-Math.min(700,width-36))/2,y:(height-(width<600?84:104))/2,width:Math.min(700,Math.max(1,width-36)),height:width<600?84:104};
-    // The opaque capsule and its exact clearance protect the review action.
-    // Other content retains its soft mask; masking the logo's transparent
-    // image box again would push the point band away from the capsule rim.
+      : {x:(width-Math.min(500,Math.max(1,width-72)))/2,y:(height-(width<600?180:210))/2,width:Math.min(500,Math.max(1,width-72)),height:width<600?180:210};
+    // This transparent editorial group has no panel or capsule. Protect its
+    // logo, heading and separate review link with their individual soft masks.
     exclusions = Array.from(host.querySelectorAll('[data-review-protect],h1,h2,h3,p,a,button,img'))
-      .filter(element => !target || (element !== target && !target.contains(element)))
       // Protect the actual content, not a large anchor wrapping that content.
       .filter(element => !element.matches('a,button') || element.matches('[data-review-protect]') ||
         !element.querySelector('h1,h2,h3,p,img,[data-review-protect]'))
-      .map(element => element.getBoundingClientRect())
+      .map(element => {
+        const box=element.getBoundingClientRect();
+        // Canonical 564x564 G: alpha>8 bounds [189,187,375,377]. Its large
+        // transparent margins are not visible content and need no clearance.
+        return element.matches('.review-google-mark')
+          ? {left:box.left+box.width*189/564,top:box.top+box.height*187/564,width:box.width*186/564,height:box.height*190/564}
+          : box;
+      })
       .filter(box => box.width > 0 && box.height > 0)
-      .map(box => ({x:box.left-bounds.left-13,y:box.top-bounds.top-13,width:box.width+26,height:box.height+26}));
+      .map(box => ({x:box.left-bounds.left-8,y:box.top-bounds.top-8,width:box.width+16,height:box.height+16}));
   }
   function paint(value, activity = 0) {
     context.setTransform(scale,0,0,scale,0,0);
@@ -107,7 +112,7 @@ export function mountReviews({canvas, host, reducedMotion}) {
     const radius=capsule.height/2,halfWidth=Math.max(0,capsule.width/2-radius);
     const envelopeX=narrow?Math.min(width*.59,capsule.width/2+height*.46):Math.min(width*.49,capsule.width/2+140);
     const envelopeY=narrow?Math.min(height*.49,capsule.height/2+height*.31):Math.min(height*.44,capsule.height/2+118);
-    // Only a little light spills from the two capsule edges. The points carry
+    // Only a little light spills from the two group edges. The points carry
     // the colour: no paths, orbit tracks or shaded spheres sit behind them.
     const glowRadius=Math.min(width*.27,height*.30);
     for(const [side,colour]of [[-1,FIELD_COLOURS[0]],[1,FIELD_COLOURS[2]]]){
@@ -138,7 +143,8 @@ export function mountReviews({canvas, host, reducedMotion}) {
         if(outer<=0)continue;
         const qx=Math.abs(x-cx)-halfWidth,qy=Math.abs(y-cy);
         const clearance=Math.hypot(Math.max(qx,0),qy)-radius;
-        if(clearance<4)continue;
+        // Distance shapes a broad lighting band only: an invisible capsule
+        // must not cut the matrix around the transparent editorial content.
         const edge=Math.exp(-((clearance/(height*.22))**2));
         const light=.84+.16*Math.sin(baseX/width*4.2-baseY/height*2.4-value*.9);
         const alpha=strength*Math.pow(outer,narrow?.35:.30)*(.25+.75*edge)*light;
@@ -157,8 +163,8 @@ export function mountReviews({canvas, host, reducedMotion}) {
     exclusions.forEach(box => {
       const x = box.x+box.width/2;
       const y = box.y+box.height/2;
-      const radiusX = box.width/Math.SQRT2+36;
-      const radiusY = box.height/Math.SQRT2+36;
+      const radiusX = box.width/Math.SQRT2+16;
+      const radiusY = box.height/Math.SQRT2+16;
       context.setTransform(scale*radiusX,0,0,scale*radiusY,scale*x,scale*y);
       const mask = context.createRadialGradient(0,0,0,0,0,1);
       mask.addColorStop(0,'rgba(0,0,0,1)');

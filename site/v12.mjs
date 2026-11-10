@@ -1,4 +1,4 @@
-import {copy} from './copy.mjs?v=12';
+import {copy} from './copy.mjs?v=14';
 import {createScrollCursor} from './scroll-cursor.mjs';
 import {surfacePalette,clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline} from './v7-timeline.mjs';
@@ -105,4 +105,4 @@ addEventListener('pagehide',event=>{if(raf)cancelAnimationFrame(raf);raf=0;nativ
 document.fonts?.ready.then(()=>{if(!disposed)measure(false);});
 document.querySelector('#year').textContent=new Intl.DateTimeFormat('en',{year:'numeric',timeZone:'Europe/Sofia'}).format(new Date());let preferred='bg';try{preferred=localStorage.getItem('zeleni-site-language')||'bg';}catch{}language(preferred);
 if(new URL(location.href).searchParams.get('graphics')==='off')useFallback();else import('./native/presentation.mjs?v=11').then(async({mountNativePresentation})=>{const instance=await mountNativePresentation({host,reducedMotion:query});if(disposed){instance.dispose();return;}native=instance;lastNativeSize=layout.width+'x'+layout.height;const result=await native.whenReady;if(disposed||result.state==='disposed')return;if(result.state==='fallback'){useFallback();return;}ready=true;fallback.style.opacity='0';host.style.opacity='1';root.dataset.nativePresentation='ready';measure(true);}).catch(()=>{if(!disposed)useFallback();});
-import('./reviews.mjs?v=13').then(({mountReviews})=>{if(disposed)return;reviewEffect=mountReviews({host:reviews,canvas:document.querySelector('#reviews-canvas'),reducedMotion:query});schedule();}).catch(()=>{});
+import('./reviews.mjs?v=14').then(({mountReviews})=>{if(disposed)return;reviewEffect=mountReviews({host:reviews,canvas:document.querySelector('#reviews-canvas'),reducedMotion:query});schedule();}).catch(()=>{});
