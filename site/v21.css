@@ -8,10 +8,13 @@
 
 .fleet-refresh {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, .8fr);
-  gap: clamp(36px, 6vw, 110px);
-  align-items: center;
-  margin-top: clamp(56px, 6vw, 96px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 22px;
+  align-content: start;
+  min-width: 0;
+}
+.fleet-refresh-copy {
+  max-width: min(100%, 440px);
 }
 .toyota-photo {
   position: relative;
@@ -27,18 +30,17 @@
   top: -82.8125%;
 }
 .fleet-refresh h3 {
-  max-width: 510px;
   font-family: Unbounded, Manrope, sans-serif;
-  font-size: clamp(28px, 3vw, 44px);
-  line-height: 1.27;
+  font-size: clamp(22px, 2vw, 29px);
+  line-height: 1.35;
   font-weight: 450;
   letter-spacing: -.035em;
 }
 .fleet-refresh p {
   max-width: 400px;
-  margin-top: 25px;
-  font-size: 15px;
-  line-height: 1.85;
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.75;
   color: var(--muted);
 }
 
@@ -161,15 +163,13 @@
     font-size: clamp(29px, 8.5vw, 34px);
   }
   .fleet-refresh {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    margin-top: 54px;
+    gap: 18px;
   }
   .fleet-refresh h3 {
-    font-size: clamp(27px, 7.2vw, 35px);
+    font-size: clamp(21px, 5.8vw, 26px);
   }
   .fleet-refresh p {
-    margin-top: 18px;
+    margin-top: 10px;
     font-size: 13px;
   }
   .reviews-section .reviews-content {
