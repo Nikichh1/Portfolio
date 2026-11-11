@@ -18,6 +18,13 @@
 .hero-car{--car-width:min(1088px,76vw);display:block;left:1.5%;top:calc(100svh - 190px - var(--car-width)*.3815);z-index:6}
 .hero-car img{animation-duration:.9s}
 .stage-line{opacity:calc(1 - var(--scene-expansion,0))}
+.scroll-cue{position:absolute;z-index:9;right:5.6%;bottom:18px;display:flex;align-items:center;gap:13px;min-height:44px;font-size:11px;font-weight:650;color:var(--ink);opacity:var(--scroll-cue-opacity,1);visibility:var(--scroll-cue-visibility,visible)}
+.scroll-cue svg{flex:none;animation:scroll-invitation 1.8s ease-in-out infinite;animation-play-state:var(--scroll-cue-motion,running)}
+.scroll-cue:focus-visible{opacity:1}
+@keyframes scroll-invitation{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
+@media(max-width:700px){.scroll-cue{right:10px;bottom:20px;min-width:34px;min-height:140px;flex-direction:column;gap:16px;font-size:11px}.scroll-cue span{writing-mode:vertical-rl;letter-spacing:.03em}}
+@media(prefers-reduced-motion:reduce){.scroll-cue svg{animation:none}}
+html[data-reduced-motion=true] .scroll-cue svg{animation:none}
 html:not([data-motion-state]) .product-story{height:auto}
 html:not([data-motion-state]) .product-pin{position:relative;top:0}
 @media(min-width:701px) and (max-height:800px){

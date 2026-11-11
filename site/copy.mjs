@@ -315,11 +315,13 @@ Object.assign(copy.en, {
 
 Object.assign(copy.bg, {
   servicesVisualAlt:"Зелени таксита по улиците на нощен Пловдив",
+  scrollCue:"Скролни надолу",
   servicesVisualLabel:"Пловдив. Ден и нощ.",
   serviceHybridDescription:"Hyundai Ioniq и Toyota Corolla. Избираме хибриди с мисъл за въздуха в Пловдив."
 });
 Object.assign(copy.en, {
   servicesVisualAlt:"Zeleni taxis on the streets of Plovdiv at night",
+  scrollCue:"Scroll to explore",
   servicesVisualLabel:"Plovdiv. Day and night.",
   serviceHybridDescription:"Hyundai Ioniq and Toyota Corolla. We choose hybrids with Plovdiv’s air in mind."
 });

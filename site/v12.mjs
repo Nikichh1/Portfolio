@@ -1,8 +1,8 @@
-import {copy} from './copy.mjs?v=22';
+import {copy} from './copy.mjs?v=24';
 import {createScrollCursor} from './scroll-cursor.mjs';
 import {surfacePalette,clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline} from './v7-timeline.mjs';
-import {presentationFrame,openingComposition,nativePlaneFrame,backgroundDarkness,reviewDarkness,sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible} from './v12-motion.mjs?v=18';
+import {presentationFrame,openingComposition,nativePlaneFrame,backgroundDarkness,reviewDarkness,sceneTimeline,scenePhase,addressOffset,carrierFrame,flowCoordinates,carrierVisible,installOverlap} from './v12-motion.mjs?v=24';
 const root=document.documentElement,header=document.querySelector('.site-header'),story=document.querySelector('.product-story'),marker=document.querySelector('.product-start'),pin=document.querySelector('.product-pin'),windowEl=document.querySelector('.native-window'),plane=document.querySelector('.native-viewport');
 const intro=document.querySelector('.product-intro'),car=document.querySelector('.hero-car'),host=document.querySelector('#native-host'),fallback=document.querySelector('#native-fallback'),install=document.querySelector('#app-install'),rideNote=document.querySelector('.ride-note'),reviews=document.querySelector('#reviews'),dock=document.querySelector('.mobile-dock'),last=document.querySelector('#last-call');
 const media=matchMedia('(prefers-reduced-motion: reduce)'),forcedReduced=new URL(location.href).searchParams.get('motion')==='reduce',reduced=()=>media.matches||forcedReduced,query={get matches(){return reduced();},addEventListener(...args){media.addEventListener(...args);},removeEventListener(...args){media.removeEventListener(...args);}};
@@ -40,7 +40,7 @@ function measure(snap=false){
  enhanced=activated&&ready&&!reduced();root.dataset.handoff=enhanced?'active':'ordinary';
  // A real layout change may alter the install section's negative overlap.
  // Apply it before caching its document coordinates, once at this boundary.
- root.style.setProperty('--handoff-overlap',pin.clientHeight+(pin.clientHeight+header.getBoundingClientRect().height)*.35+'px');
+ root.style.setProperty('--handoff-overlap',installOverlap({pinHeight:pin.clientHeight,header:header.getBoundingClientRect().height,storySpan:story.getBoundingClientRect().height})+'px');
  const pinRect=pin.getBoundingClientRect(),w=pin.clientWidth,h=pin.clientHeight,hh=header.getBoundingClientRect().height,b=story.getBoundingClientRect(),start=marker.getBoundingClientRect().top,introRect=intro.getBoundingClientRect(),ib=install.getBoundingClientRect(),rb=reviews.getBoundingClientRect(),lb=last.getBoundingClientRect();
  const device=install.querySelector('.install-phone--address .install-device'),rect=device.getBoundingClientRect(),style=getComputedStyle(device),oldProgress=Number(root.dataset.installProgress)||0,offset=addressOffset(oldProgress,w<=700),shift=enhanced?(parseFloat(install.style.getPropertyValue('--handoff-scroll-offset'))||0):0;
  const destination={cx:rect.left+rect.width/2-offset.x,cy:rect.top+rect.height/2-offset.y-start-shift,width:parseFloat(style.width),height:parseFloat(style.height),radius:parseFloat(style.borderRadius),padding:parseFloat(style.paddingLeft)};
@@ -84,6 +84,8 @@ function render(){
  writeStyle(windowEl,'--native-shadow',enhanced&&phase.handoff?shadow[0]*phase.carrier+'px '+shadow[1]*phase.carrier+'px '+shadow[2]*phase.carrier+'px rgba(5,18,8,'+shadow[3]*phase.carrier+')':'0 '+20*(1-f.expand)+'px '+50*(1-f.expand)+'px rgba(5,18,8,'+.19*(1-f.expand)+')');
  writeStyle(windowEl,'--native-rotation',(f.rotation||0)+'deg');writeStyle(windowEl,'--carrier-opacity',String(enhanced&&phase.screen>=1?0:1));writeStyle(windowEl,'--handoff-screen',String(phase.screen));writeAttribute(windowEl,'aria-hidden',String(enhanced&&phase.screen>=1));writeStyle(windowEl,'--phone-lens-opacity',String(1-smooth(f.expand/.5)));writeStyle(windowEl,'--app-preview-opacity',String(1-smooth((f.expand-.04)/.38)));
  writeStyle(pin,'--scene-expansion',String(f.expand));writeStyle(pin,'--media-lift-y',-(f.lift||0)+'px');writeStyle(pin,'--road-opacity',String(f.car));writeStyle(intro,'--intro-opacity',String(f.intro));writeStyle(intro,'--intro-y',-18*(1-f.intro)+'px');intro.inert=f.intro<.05;
+ writeStyle(pin,'--scroll-cue-opacity',String(enhanced?1-smooth((phase.rawHandoff-.35)/.22):1));
+ writeStyle(pin,'--scroll-cue-visibility',enhanced&&phase.rawHandoff>=.57?'hidden':'visible');writeStyle(pin,'--scroll-cue-motion',enhanced&&phase.rawHandoff>=.57?'paused':'running');
  writeStyle(car,'--car-opacity',String(f.car));writeStyle(car,'--car-x',-30*(1-f.car)+'px');writeStyle(car,'--car-y',8*(1-f.car)+'px');
  for(const [name,value]of Object.entries({'install-progress':installP,'handoff-screen':phase.screen,'handoff-booking':phase.booking,'handoff-copy':phase.copy,'handoff-target':phase.screen>=1?1:0}))writeStyle(install,'--'+name,String(value));
  const journeyDarkness=enhanced?backgroundDarkness(f.expand,phase.handoff,reduced()):reduced()?0:smooth((f.progress-.09)/.35)*(1-smooth(exit));

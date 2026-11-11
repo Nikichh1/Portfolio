@@ -28,12 +28,20 @@ export function reviewDarkness({top,height,viewport,header=0}){
 
 // The handset handoff and the moving car share the whole visible story clock.
 // The car never reaches an internal stop before its native carrier disappears.
+const screenRelease=.90;
+const handoffDistance=(runway,viewport)=>Math.min(viewport*.55,runway*.42);
+// At content release, the next chapter starts 16px below the sticky header.
+// Its measured height still determines the real phone's landing position.
+export function installOverlap({pinHeight,header,storySpan}){
+ const runway=Math.max(1,storySpan-pinHeight);
+ return Math.max(0,pinHeight+(1-screenRelease)*handoffDistance(runway,pinHeight+header)-16);
+}
 export function sceneTimeline(input,enhanced=true){
  if(!enhanced){const t=previousTimeline(input);return {...t,originalRunway:t.runway,driveRunway:t.runway,tailSpan:0,handoffSpan:0};}
  const {header,viewport,storyBottom,markerTop,pinHeight}=input;
  const runway=Math.max(1,storyBottom-markerTop-pinHeight);
  const occupiedViewport=pinHeight+header;
- const handoffSpan=Math.min(occupiedViewport*.9,runway*.7),driveRunway=Math.max(1,runway-handoffSpan);
+ const handoffSpan=handoffDistance(runway,occupiedViewport),driveRunway=Math.max(1,runway-handoffSpan);
  const tailSpan=Math.min(occupiedViewport*.35,driveRunway*.3),originalRunway=Math.max(1,driveRunway-tailSpan);
  return {runway,originalRunway,driveRunway,tailSpan,handoffSpan,total:runway,target:clamp((header-markerTop)/runway)};
 }
@@ -44,12 +52,12 @@ export function scenePhase(distance,timeline,mobile=false){
  const handoff=smooth(rawHandoff);
  // The screen begins dissolving while the handset is still settling. The
  // tall mobile carrier approaches the final screen ratio earlier.
- const release=.90;
+ const release=screenRelease;
  const dissolveStart=mobile?.48:.62;
  const carrier=smooth(rawHandoff/release);
  const screen=smooth((rawHandoff-dissolveStart)/(release-dissolveStart));
  const booking=smooth((rawHandoff-.18)/.46);
- const copy=smooth((rawHandoff-.43)/.18);
+ const copy=mobile?smooth((rawHandoff-.68)/.20):smooth((rawHandoff-.43)/.18);
  return {drive,native,handoff,rawHandoff,carrier,screen,booking,copy};
 }
 export function addressOffset(progress,mobile){
