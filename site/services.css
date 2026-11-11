@@ -1,0 +1,175 @@
+.services-section,
+.tariffs-section {
+  display: grid;
+  grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
+  gap: clamp(36px, 5vw, 90px);
+  padding-top: 78px;
+  padding-bottom: 78px;
+  border-top: 1px solid var(--line);
+}
+
+.services-section h2,
+.tariffs-section h2 {
+  max-width: 570px;
+}
+
+.service-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 32px 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-list li {
+  min-width: 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+
+.service-list h3 {
+  font-size: clamp(19px, 1.65vw, 24px);
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: -.025em;
+}
+
+.service-list p {
+  max-width: 340px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.tariff-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+}
+
+.tariff-label-column {
+  width: 44%;
+}
+
+.tariff-table th,
+.tariff-table td {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--line);
+  vertical-align: middle;
+}
+
+.tariff-table th {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.45;
+}
+
+.tariff-table thead th {
+  padding-top: 0;
+  padding-bottom: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.tariff-table tbody th {
+  padding-right: 16px;
+}
+
+.tariff-table th:not(:first-child),
+.tariff-table td {
+  padding-left: 12px;
+  text-align: right;
+}
+
+.tariff-table td {
+  white-space: nowrap;
+  font-size: clamp(21px, 2.1vw, 30px);
+  font-weight: 550;
+  letter-spacing: -.035em;
+  line-height: 1.25;
+}
+
+.tariff-distance td {
+  color: #307c30;
+  font-weight: 750;
+}
+
+@media (max-width: 1000px) {
+  .services-section,
+  .tariffs-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 38px;
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+
+  .service-list {
+    gap: 28px 44px;
+  }
+
+  .tariff-table {
+    max-width: 760px;
+  }
+}
+
+@media (max-width: 700px) {
+  .services-section,
+  .tariffs-section {
+    gap: 30px;
+    padding-top: 46px;
+    padding-bottom: 46px;
+  }
+
+  .service-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .service-list li {
+    padding-top: 20px;
+  }
+
+  .service-list h3 {
+    font-size: 20px;
+  }
+
+  .service-list p {
+    max-width: 100%;
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 1.75;
+  }
+
+  .tariff-table th,
+  .tariff-table td {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .tariff-table th {
+    font-size: 12px;
+  }
+
+  .tariff-table thead th {
+    font-size: 12px;
+    padding-bottom: 16px;
+  }
+
+  .tariff-table tbody th {
+    padding-right: 8px;
+  }
+
+  .tariff-table th:not(:first-child),
+  .tariff-table td {
+    padding-left: 6px;
+  }
+
+  .tariff-table td {
+    font-size: clamp(18px, 5.1vw, 23px);
+  }
+}

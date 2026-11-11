@@ -241,3 +241,68 @@ Object.assign(copy.en,{
 // V14: the reviews action is separate from its heading.
 Object.assign(copy.bg,{readReviews:"Прочети отзивите"});
 Object.assign(copy.en,{readReviews:"Read the reviews"});
+
+// Service information and fares supplied for the website.
+Object.assign(copy.bg, {
+  "v6HeroOne": "Градът е твой.",
+  "v6HeroTwo": "Пътувай със зелено.",
+  "servicesTitle": "Повече от такси.",
+  "serviceHybridTitle": "Хибриден автопарк",
+  "serviceHybridDescription": "Hyundai Ioniq и Toyota Corolla за ежедневните маршрути в Пловдив.",
+  "serviceDispatchTitle": "24/7 диспечерски център",
+  "serviceDispatchDescription": "Екипът ни приема поръчки денонощно.",
+  "serviceCleanTitle": "Чистота без компромис",
+  "serviceCleanDescription": "Поддържани автомобили и професионални водачи.",
+  "serviceJourneyTitle": "Градски и междуградски",
+  "serviceJourneyDescription": "Пътувания в Пловдив и предварително планирани курсове извън града.",
+  "tariffsTitle": "Ясни цени. Без изненади.",
+  "tariffType": "Тарифа",
+  "tariffDay": "Дневна",
+  "tariffNight": "Нощна",
+  "tariffDistance": "Цена за километър",
+  "tariffInitial": "Първоначална такса",
+  "tariffBooking": "Повикване",
+  "tariffWait": "Престой за минута",
+  "fleetRefreshTitle": "Нови автомобили. Познатите Зелени.",
+  "fleetRefreshDescription": "Обновяваме автопарка с нови попълнения, сред които Toyota Corolla Hybrid.",
+  "toyotaAlt": "Зелено-бяла Toyota Corolla от автопарка на Зелени такси",
+  "reviewsTitle": "Доверието се печели с всеки курс.",
+  "readReviews": "Виж всички отзиви в Google"
+});
+Object.assign(copy.en, {
+  "v6HeroOne": "The city is yours.",
+  "v6HeroTwo": "Ride green.",
+  "servicesTitle": "More than a taxi.",
+  "serviceHybridTitle": "Hybrid fleet",
+  "serviceHybridDescription": "Hyundai Ioniq and Toyota Corolla for everyday journeys in Plovdiv.",
+  "serviceDispatchTitle": "24/7 dispatch",
+  "serviceDispatchDescription": "Our team takes bookings around the clock.",
+  "serviceCleanTitle": "Cleanliness without compromise",
+  "serviceCleanDescription": "Well-maintained cars and professional drivers.",
+  "serviceJourneyTitle": "City and intercity journeys",
+  "serviceJourneyDescription": "Journeys in Plovdiv and trips beyond the city arranged in advance.",
+  "tariffsTitle": "Clear fares. No surprises.",
+  "tariffType": "Fare",
+  "tariffDay": "Day",
+  "tariffNight": "Night",
+  "tariffDistance": "Price per kilometre",
+  "tariffInitial": "Initial charge",
+  "tariffBooking": "Booking",
+  "tariffWait": "Waiting per minute",
+  "fleetRefreshTitle": "New cars. The familiar Zeleni.",
+  "fleetRefreshDescription": "We are refreshing our fleet with new additions, including the Toyota Corolla Hybrid.",
+  "toyotaAlt": "Green and white Toyota Corolla from the Zeleni taxi fleet",
+  "reviewsTitle": "Trust is earned on every journey.",
+  "readReviews": "See all reviews on Google"
+});
+
+Object.assign(copy.bg, {
+  reviewRatingAria:"4,6 от 5 от 369 отзива в Google",
+  reviewCount:"369 отзива в Google",reviewSnapshot:"Към 11.11.2026 г.",
+  reviewExcerpts:"Кратки откъси от реални отзиви в Google, запазени в оригиналния им език."
+});
+Object.assign(copy.en, {
+  reviewRatingAria:"4.6 out of 5 from 369 Google reviews",
+  reviewCount:"369 Google reviews",reviewSnapshot:"As of 11 Nov 2026",
+  reviewExcerpts:"Short excerpts from real Google reviews, shown in their original language."
+});

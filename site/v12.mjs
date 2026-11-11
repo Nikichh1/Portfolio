@@ -1,4 +1,4 @@
-import {copy} from './copy.mjs?v=18';
+import {copy} from './copy.mjs?v=21';
 import {createScrollCursor} from './scroll-cursor.mjs';
 import {surfacePalette,clamp,smooth} from './v6-layout.mjs';
 import {storyTimeline} from './v7-timeline.mjs';
