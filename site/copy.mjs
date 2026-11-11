@@ -299,10 +299,27 @@ Object.assign(copy.en, {
 Object.assign(copy.bg, {
   reviewRatingAria:"4,6 от 5 от 369 отзива в Google",
   reviewCount:"369 отзива в Google",reviewSnapshot:"Към 11.11.2026 г.",
-  reviewExcerpts:"Кратки откъси от реални отзиви в Google, запазени в оригиналния им език."
+  reviewAnna:"Чудесно пътуване с кола №141. Пристигнах безопасно и навреме.",
+  reviewMatt:"Много добро обслужване, винаги навреме. Кола №150.",
+  reviewVeselin:"…любезно, професионално и коректно отношение…",
+  reviewExcerpts:"Кратки откъси от реални отзиви в Google. Англоезичните отзиви са преведени на български."
 });
 Object.assign(copy.en, {
   reviewRatingAria:"4.6 out of 5 from 369 Google reviews",
   reviewCount:"369 Google reviews",reviewSnapshot:"As of 11 Nov 2026",
-  reviewExcerpts:"Short excerpts from real Google reviews, shown in their original language."
+  reviewAnna:"Excellent experience with car N141. Arrived safely on time.",
+  reviewMatt:"Very good service, always on time car number 150",
+  reviewVeselin:"…courteous, professional and respectful service…",
+  reviewExcerpts:"Short excerpts from real Google reviews. The Bulgarian review is translated into English."
+});
+
+Object.assign(copy.bg, {
+  servicesVisualAlt:"Зелени таксита по улиците на нощен Пловдив",
+  servicesVisualLabel:"Пловдив. Ден и нощ.",
+  serviceHybridDescription:"Hyundai Ioniq и Toyota Corolla. Избираме хибриди с мисъл за въздуха в Пловдив."
+});
+Object.assign(copy.en, {
+  servicesVisualAlt:"Zeleni taxis on the streets of Plovdiv at night",
+  servicesVisualLabel:"Plovdiv. Day and night.",
+  serviceHybridDescription:"Hyundai Ioniq and Toyota Corolla. We choose hybrids with Plovdiv’s air in mind."
 });

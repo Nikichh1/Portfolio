@@ -102,8 +102,14 @@ export async function mountNativePresentation({host,assetBase=new URL('./',impor
  function dispose(){if(disposed)return;disposed=true;clearTimeout(readinessTimer);if(worldRefreshLayer?.refresh===worldRefreshObserved)worldRefreshLayer.refresh=worldRefreshOriginal;fetchAbort.abort();doc.removeEventListener('visibilitychange',visibility);win.removeEventListener('resize',windowResize);query.removeEventListener?.('change',preference);if(map&&originalTrigger)map.triggerRepaint=originalTrigger;scene?.destroy();restoreResolver();host.dataset.nativeStatus=host.dataset.nativeState='disposed';if(!ready)resolveReady({state:'disposed'});}
  function fallback(){if(disposed)return;if(!ready)resolveReady({state:'fallback'});rejectStart(new Error('Native presentation could not be prepared'));dispose();host.dataset.nativeReady='false';host.dataset.nativeStatus=host.dataset.nativeState='fallback';host.dispatchEvent(new win.CustomEvent('presentation-fallback',{detail:{state:'fallback'}}));}
  function armReadinessDeadline(){clearTimeout(readinessTimer);readinessTimer=0;if(!ready&&effectiveVisible())readinessTimer=setTimeout(fallback,20000);}
- function snapshot(){const canvas=map?.getCanvas();return {progress,reducedMotion:isReduced(),visible:effectiveVisible(),ready,modelReady:Boolean(scene?.modelReady),frames:renderFrames,canvas:canvas?[canvas.width,canvas.height]:[0,0],css:[host.clientWidth,host.clientHeight],dpr:map?.getPixelRatio?.()||0,preparation:lastPreparation?{...lastPreparation}:null,camera:host.dataset.nativeCamera?JSON.parse(host.dataset.nativeCamera):null,routeDistance:Number(host.dataset.nativeRouteDistance)||0,routeLength:Number(host.dataset.nativeRouteLength)||0,turnProgress:Number(host.dataset.nativeTurnProgress)||0};}
- function repaintDiagnostics(){host.dataset.nativeRepaintBudget=String(repaintBudget);host.dataset.nativeSuppressedRepaints=String(suppressedRepaints);host.dataset.nativeAsyncRepaints=String(asyncRepaints);host.dataset.nativeOwnerRepaints=String(ownerRepaints);host.dataset.nativeSourceAdmissions=String(sourceContent.size);}
+ function snapshot(measured=false){const canvas=map?.getCanvas();return {progress,reducedMotion:isReduced(),visible:effectiveVisible(),ready,modelReady:Boolean(scene?.modelReady),frames:renderFrames,canvas:canvas?[canvas.width,canvas.height]:[0,0],css:measured&&lastWidth&&lastHeight?[lastWidth,lastHeight]:[host.clientWidth,host.clientHeight],dpr:map?.getPixelRatio?.()||0,preparation:lastPreparation?{...lastPreparation}:null,camera:host.dataset.nativeCamera?JSON.parse(host.dataset.nativeCamera):null,routeDistance:Number(host.dataset.nativeRouteDistance)||0,routeLength:Number(host.dataset.nativeRouteLength)||0,turnProgress:Number(host.dataset.nativeTurnProgress)||0};}
+ function repaintDiagnostics(){
+  writeDiagnostic('nativeRepaintBudget',String(repaintBudget));
+  writeDiagnostic('nativeSuppressedRepaints',String(suppressedRepaints));
+  writeDiagnostic('nativeAsyncRepaints',String(asyncRepaints));
+  writeDiagnostic('nativeOwnerRepaints',String(ownerRepaints));
+  writeDiagnostic('nativeSourceAdmissions',String(sourceContent.size));
+ }
  function admit(){repaintBudget=180;repaintUntil=clock()+700;repaintDiagnostics();}
  function admitOwner(){ownerRepaints++;preparedMask=0;admit();}
  function admitPrepared(){let mask=0;for(const [i,layer]of [scene?.worldMaterials,scene?.buildingMaterials,scene?.buildingShadows,scene?.bridgeRoads].entries())if(layer?.isPrepared?.()??true)mask|=1<<i;const newlyPrepared=mask&~preparedMask;preparedMask|=mask;if(ready&&newlyPrepared){asyncRepaints++;admit();}}
@@ -119,7 +125,39 @@ export async function mountNativePresentation({host,assetBase=new URL('./',impor
   // Observe that real completion; do not force new refreshes or poll for it.
   worldRefreshObserved=function(...args){const value=worldRefreshOriginal.apply(this,args);if(!disposed&&!ready&&!reporting&&effectiveVisible()&&originalTrigger){const wasPrepared=lastPreparation?.world===true;report();if(!wasPrepared&&lastPreparation?.world===true)originalTrigger();}return value;};layer.refresh=worldRefreshObserved;
  }
- function report(){if(disposed||reporting)return;reporting=true;try{lastPreparation=readPreparation();const state=snapshot();host.dataset.nativePreparation=JSON.stringify(state.preparation);host.dataset.nativeProgress=progress.toFixed(5);host.dataset.nativeModelReady=String(state.modelReady);host.dataset.nativeFrames=String(renderFrames);host.dataset.nativeCanvas=JSON.stringify(state.canvas);host.dataset.nativeCss=JSON.stringify(state.css);host.dataset.nativeDpr=String(state.dpr);host.dataset.nativeVisible=String(state.visible);host.dataset.nativeReduced=String(state.reducedMotion);host.dataset.nativeLampMode='approved night vehicle lenses and ground lamp spill';if(!ready&&host.dataset.nativeRejectedAsset){fallback();return;}const geometryReady=Boolean(scene?.hasGeography?.()&&map.isSourceLoaded('building-details')&&Object.values(lastPreparation).every(Boolean));if(!ready&&state.modelReady&&geometryReady){ready=true;admit();clearTimeout(readinessTimer);host.dataset.nativeReady='true';const detail={...state,ready:true,geometryReady:true};resolveReady(detail);host.dispatchEvent(new win.CustomEvent('presentation-ready',{detail}));}host.dataset.nativeStatus=host.dataset.nativeState=ready?'ready':'loading';repaintDiagnostics();}finally{reporting=false;}}
+ function writeDiagnostic(name, value) {
+  if (host.dataset[name] !== value) host.dataset[name] = value;
+ }
+ function report(){
+  if(disposed||reporting)return;
+  reporting=true;
+  try{
+   lastPreparation=readPreparation();
+   // The adapter's resize boundary already measured this fixed render plane.
+   // Reading client dimensions after every paint can force phone layout again.
+   const state=snapshot(true);
+   writeDiagnostic('nativePreparation',JSON.stringify(state.preparation));
+   writeDiagnostic('nativeProgress',progress.toFixed(5));
+   writeDiagnostic('nativeModelReady',String(state.modelReady));
+   writeDiagnostic('nativeFrames',String(renderFrames));
+   writeDiagnostic('nativeCanvas',JSON.stringify(state.canvas));
+   writeDiagnostic('nativeCss',JSON.stringify(state.css));
+   writeDiagnostic('nativeDpr',String(state.dpr));
+   writeDiagnostic('nativeVisible',String(state.visible));
+   writeDiagnostic('nativeReduced',String(state.reducedMotion));
+   writeDiagnostic('nativeLampMode','approved night vehicle lenses and ground lamp spill');
+   if(!ready&&host.dataset.nativeRejectedAsset){fallback();return;}
+   const geometryReady=Boolean(scene?.hasGeography?.()&&map.isSourceLoaded('building-details')&&Object.values(lastPreparation).every(Boolean));
+   if(!ready&&state.modelReady&&geometryReady){
+    ready=true;admit();clearTimeout(readinessTimer);host.dataset.nativeReady='true';
+    const detail={...state,ready:true,geometryReady:true};resolveReady(detail);
+    host.dispatchEvent(new win.CustomEvent('presentation-ready',{detail}));
+   }
+   writeDiagnostic('nativeState',ready?'ready':'loading');
+   writeDiagnostic('nativeStatus',ready?'ready':'loading');
+   repaintDiagnostics();
+  }finally{reporting=false;}
+ }
  let routeTrack;
  function referenceFrame(refresh=false){let declared;try{declared=JSON.parse(host.dataset.presentationViewport||'null');}catch{}if(Array.isArray(declared)&&declared.length===2&&declared.every(value=>Number.isFinite(value)&&value>0&&value<=16384)){if(!overviewReference||overviewReference.width!==declared[0]||overviewReference.height!==declared[1])overviewReference={width:declared[0],height:declared[1]};}else if(refresh||!overviewReference)overviewReference={width:Math.max(1,host.clientWidth),height:Math.max(1,host.clientHeight)};return overviewReference;}
  function paint(){if(!map||disposed||!effectiveVisible())return;admitOwner();if(!openingWidth)openingWidth=Math.max(1,host.clientWidth);const sample=routeTrack.sample(isReduced()?0:progress,openingWidth,referenceFrame()),{pose,camera}=sample;scene.pose={...pose};scene.targetPose={...pose};scene.cameraSpeed=0;scene.follow=false;scene.routeMotion?.setPose(scene.pose);scene.renderPose();map.jumpTo(camera,{passengerFollowFrame:true});map.triggerRepaint();host.dataset.nativeCamera=JSON.stringify(camera);host.dataset.nativePose=JSON.stringify(pose);host.dataset.nativeRouteDistance=sample.distance.toFixed(3);host.dataset.nativeRouteLength=sample.length.toFixed(3);host.dataset.nativeTurnProgress=sample.turnProgress.toFixed(5);host.dataset.nativeRouteTurns=JSON.stringify(sample.turns);host.dataset.nativeOverview=JSON.stringify({progress:sample.overviewProgress,reference:overviewReference,endpoint:sample.endpoint,fit:sample.overview});report();}

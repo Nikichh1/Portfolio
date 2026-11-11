@@ -1,46 +1,184 @@
 .services-section,
 .tariffs-section {
   display: grid;
-  grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
-  gap: clamp(36px, 5vw, 90px);
-  padding-top: 78px;
-  padding-bottom: 78px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(42px, 6vw, 110px);
+  align-items: start;
+  padding-top: 82px;
+  padding-bottom: 82px;
   border-top: 1px solid var(--line);
 }
 
 .services-section h2,
 .tariffs-section h2 {
-  max-width: 570px;
+  max-width: 580px;
+}
+
+.services-visual {
+  position: relative;
+  aspect-ratio: 1.27;
+  overflow: hidden;
+  margin-top: 43px;
+  background: #102319;
+}
+
+.services-visual > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 45% 54%;
+}
+
+.services-visual::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 44%, rgb(5 17 10 / 78%));
+}
+
+.services-visual figcaption {
+  position: absolute;
+  z-index: 1;
+  left: 28px;
+  right: 90px;
+  bottom: 27px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.5;
+  color: #fff;
+}
+
+.services-hours {
+  position: absolute;
+  z-index: 1;
+  right: 25px;
+  bottom: 20px;
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  color: #d0f29f;
+}
+
+.services-hours svg {
+  width: 58px;
+  height: 58px;
+  stroke: currentColor;
+  stroke-width: 1.15;
+  opacity: .8;
+}
+
+.services-hours > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding-top: 2px;
+  background: radial-gradient(ellipse 29px 13px, #101d13 75%, transparent);
+  font-size: 12px;
+  font-weight: 650;
 }
 
 .service-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .service-list li {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 24px;
   min-width: 0;
-  padding-top: 24px;
+  padding: 28px 0;
   border-top: 1px solid var(--line);
 }
 
+.service-list li:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.service-list li:last-child {
+  padding-bottom: 0;
+}
+
+.service-icon {
+  display: block;
+  width: 40px;
+  height: 40px;
+  margin-top: 1px;
+  color: var(--ink);
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.service-icon-accent {
+  stroke: #4a8c37;
+}
+
 .service-list h3 {
-  font-size: clamp(19px, 1.65vw, 24px);
+  font-size: clamp(20px, 1.75vw, 26px);
   font-weight: 650;
   line-height: 1.35;
   letter-spacing: -.025em;
 }
 
 .service-list p {
-  max-width: 340px;
-  margin-top: 14px;
+  max-width: 390px;
+  margin-top: 12px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.8;
+}
+
+.tariffs-section {
+  align-items: center;
+}
+
+.tariffs-intro {
+  min-width: 0;
+}
+
+.tariff-illustration {
+  position: relative;
+  isolation: isolate;
+  aspect-ratio: 1.8;
+  margin-top: 24px;
+}
+
+.tariff-illustration img {
+  position: absolute;
+  pointer-events: none;
+}
+
+.tariff-street {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 94%;
+  opacity: .23;
+  mask-image: radial-gradient(ellipse 64% 48% at 49% 65%, #000 15%, transparent 80%);
+}
+
+.tariff-car {
+  left: -4%;
+  bottom: 3%;
+  width: 108%;
+  max-width: none;
+  height: auto;
+  opacity: .76;
+  mask-image: linear-gradient(90deg, #000 12%, #000 76%, transparent 99%);
 }
 
 .tariff-table {
@@ -56,7 +194,7 @@
 
 .tariff-table th,
 .tariff-table td {
-  padding: 20px 0;
+  padding: 23px 0;
   border-bottom: 1px solid var(--line);
   vertical-align: middle;
 }
@@ -70,10 +208,28 @@
 
 .tariff-table thead th {
   padding-top: 0;
-  padding-bottom: 18px;
+  padding-bottom: 20px;
   color: var(--muted);
   font-size: 13px;
   font-weight: 650;
+}
+
+.tariff-period {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.tariff-period svg {
+  display: block;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .tariff-table tbody th {
@@ -88,10 +244,15 @@
 
 .tariff-table td {
   white-space: nowrap;
-  font-size: clamp(21px, 2.1vw, 30px);
+  font-size: clamp(23px, 2.35vw, 34px);
   font-weight: 550;
   letter-spacing: -.035em;
   line-height: 1.25;
+}
+
+.tariff-distance th,
+.tariff-distance td {
+  border-bottom-color: #6b8c59;
 }
 
 .tariff-distance td {
@@ -102,36 +263,29 @@
 @media (max-width: 1000px) {
   .services-section,
   .tariffs-section {
-    grid-template-columns: minmax(0, 1fr);
     gap: 38px;
-    padding-top: 60px;
-    padding-bottom: 60px;
+    padding-top: 64px;
+    padding-bottom: 64px;
   }
 
-  .service-list {
-    gap: 28px 44px;
+  .services-section {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
   }
 
-  .tariff-table {
-    max-width: 760px;
-  }
-}
-
-@media (max-width: 700px) {
-  .services-section,
-  .tariffs-section {
-    gap: 30px;
-    padding-top: 46px;
-    padding-bottom: 46px;
-  }
-
-  .service-list {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
+  .services-visual {
+    aspect-ratio: .86;
+    margin-top: 35px;
   }
 
   .service-list li {
-    padding-top: 20px;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 16px;
+    padding: 22px 0;
+  }
+
+  .service-icon {
+    width: 34px;
+    height: 34px;
   }
 
   .service-list h3 {
@@ -139,10 +293,72 @@
   }
 
   .service-list p {
+    font-size: 13px;
+  }
+
+  .tariffs-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  .tariffs-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, .7fr);
+    align-items: center;
+    gap: 28px;
+  }
+
+  .tariff-illustration {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .services-section,
+  .tariffs-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .services-visual {
+    aspect-ratio: 1.55;
+    margin-top: 28px;
+  }
+
+  .services-visual figcaption {
+    left: 20px;
+    bottom: 21px;
+    font-size: 12px;
+  }
+
+  .services-hours {
+    right: 18px;
+    bottom: 11px;
+  }
+
+  .service-list li {
+    gap: 18px;
+    padding: 24px 0;
+  }
+
+  .service-list p {
     max-width: 100%;
-    margin-top: 10px;
+    margin-top: 9px;
     font-size: 13px;
     line-height: 1.75;
+  }
+
+  .tariffs-intro {
+    display: block;
+  }
+
+  .tariff-illustration {
+    width: min(100%, 440px);
+    aspect-ratio: 2.5;
+    margin-top: 22px;
+    margin-bottom: -12px;
   }
 
   .tariff-table th,
@@ -151,13 +367,25 @@
     padding-bottom: 18px;
   }
 
-  .tariff-table th {
+  .tariff-table th,
+  .tariff-table thead th {
     font-size: 12px;
   }
 
   .tariff-table thead th {
-    font-size: 12px;
-    padding-bottom: 16px;
+    padding-top: 0;
+    padding-bottom: 17px;
+  }
+
+  .tariff-period {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .tariff-period svg {
+    width: 20px;
+    height: 20px;
   }
 
   .tariff-table tbody th {
@@ -170,6 +398,6 @@
   }
 
   .tariff-table td {
-    font-size: clamp(18px, 5.1vw, 23px);
+    font-size: clamp(19px, 5.1vw, 24px);
   }
 }
