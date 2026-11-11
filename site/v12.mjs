@@ -88,6 +88,7 @@ function render(){
  writeStyle(pin,'--scroll-cue-visibility',enhanced&&phase.rawHandoff>=.57?'hidden':'visible');writeStyle(pin,'--scroll-cue-motion',enhanced&&phase.rawHandoff>=.57?'paused':'running');
  writeStyle(car,'--car-opacity',String(f.car));writeStyle(car,'--car-x',-30*(1-f.car)+'px');writeStyle(car,'--car-y',8*(1-f.car)+'px');
  for(const [name,value]of Object.entries({'install-progress':installP,'handoff-screen':phase.screen,'handoff-booking':phase.booking,'handoff-copy':phase.copy,'handoff-target':phase.screen>=1?1:0}))writeStyle(install,'--'+name,String(value));
+ writeStyle(install,'--install-copy-events',phase.copy>.05?'auto':'none');
  const journeyDarkness=enhanced?backgroundDarkness(f.expand,phase.handoff,reduced()):reduced()?0:smooth((f.progress-.09)/.35)*(1-smooth(exit));
  const reviewAtmosphere=reviewDarkness({top:layout.reviewTop-scrollPosition,height:layout.reviewHeight,viewport:layout.viewport,header:layout.header});
  setSurface(journeyDarkness);writeStyle(root,'--review-atmosphere',reviewAtmosphere.toFixed(5));writeData('reviewAtmosphere',reviewAtmosphere.toFixed(5));writeData('reviewDarkness','0.00000');

@@ -1,11 +1,11 @@
 /* The real native canvas returns to the first handset before normal flow. */
 html[data-handoff=active] .product-story{height:190svh}
 html[data-handoff=active] .product-pin{overflow:visible}
-html[data-handoff=active] .app-install{position:relative;z-index:7;align-items:start;margin-top:calc(-1 * var(--handoff-overlap));border-top:0;transform:translate3d(0,var(--handoff-scroll-offset,0px),0)}
+html[data-handoff=active] .app-install{position:relative;z-index:7;align-items:start;pointer-events:none;margin-top:calc(-1 * var(--handoff-overlap));border-top:0;transform:translate3d(0,var(--handoff-scroll-offset,0px),0)}
 html[data-handoff=active] .native-window{transform:rotate(var(--native-rotation,0deg));transform-origin:50% 50%;opacity:var(--carrier-opacity,1)}
 html[data-handoff=active] .install-phone--address{opacity:var(--handoff-screen,0)}
 html[data-handoff=active] .install-phone--booking{opacity:var(--handoff-booking,0)}
-html[data-handoff=active] .install-copy{opacity:var(--handoff-copy,1)}
+html[data-handoff=active] .install-copy{opacity:var(--handoff-copy,1);pointer-events:var(--install-copy-events,none)}
 html[data-handoff=active] .install-copy:focus-within{opacity:1}
 @media(max-width:1000px){
  html[data-handoff=active] .app-install{padding-top:30px;gap:35px}
