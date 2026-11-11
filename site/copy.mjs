@@ -46,9 +46,9 @@ export const copy = {
     readReviews: 'Отвори отзивите',
     teamOne: 'Работа в',
     teamTwo: 'Зелени такси',
-    teamDescription: 'Искаш да караш при нас? Обади се на Константин Петров или Андрей Нинов, за да обсъдите условията.',
+    teamDescription: 'Искаш да караш при нас? Обади се на Константин Петров или Андрей Ининов, за да обсъдите условията.',
     konstantin: 'Константин Петров',
-    andrey: 'Андрей Нинов',
+    andrey: 'Андрей Ининов',
     lastTitle: 'Поръчай такси',
     footerCity: 'Такси в Пловдив · 24/7',
     footerBrand: 'Зелени такси',
@@ -102,9 +102,9 @@ export const copy = {
     readReviews: 'Open the reviews',
     teamOne: 'Drive for',
     teamTwo: 'Zeleni Taxi',
-    teamDescription: 'Interested in driving for us? Call Konstantin Petrov or Andrey Ninov to ask about joining the team.',
+    teamDescription: 'Interested in driving for us? Call Konstantin Petrov or Andrey Ininov to ask about joining the team.',
     konstantin: 'Konstantin Petrov',
-    andrey: 'Andrey Ninov',
+    andrey: 'Andrey Ininov',
     lastTitle: 'Book a taxi',
     footerCity: 'Taxi in Plovdiv · 24/7',
     footerBrand: 'Zeleni Taxi',
@@ -120,14 +120,14 @@ Object.assign(copy.bg, {
  demoLabel:'Демонстрация на приложението',addressAlt:'Избор на адрес в тестовата версия',bookingAlt:'Потвърждаване на примерна поръчка',approachAlt:'Тестов автомобил на път към мястото на вземане',tripAlt:'Примерен курс в приложението',filmLabel:'Запис на примерния курс',
  demoCaption:'Реални екрани от тестова версия. Примерни маршрут и стойности.',playFilm:'Виж примерния курс',pauseFilm:'Спри записа',
  stepOne:'Посочи адреса.',stepOneDescription:'Откъде те взимаме и накъде отиваш. Избираш място от търсенето или направо на картата.',stepTwo:'Поръчай. Готово.',stepTwoDescription:'Провери маршрута и потвърди. Когато шофьор приеме, ще видиш колата в приложението.',stepThree:'Вече сме на път.',stepThreeDescription:'Следи как автомобилът се приближава и виж информацията за пътуването.',
- closingTitle:'Следващата спирка е твоя.',closingDescription:'Приложението е в браузъра на телефона. Диспечерът е на 032 9999.',aboutTitle:'За дните навън. И за пътя обратно.',aboutDescription:'Хибридни автомобили и диспечер по всяко време. Пътуваме в Пловдив, а за адрес извън града можеш да се обадиш.',hybridTitle:'Твоите Зелени.',hybridDescription:'Познатите зелено-бели Hyundai Ioniq Hybrid от нашия автопарк.',peopleTitle:'Предпочиташ да се обадиш?',carCaption:'Оригинален автомобил Hyundai Ioniq Hybrid на Зелени такси',teamTitle:'Карай със Зелени.',teamDescription:'Искаш да се присъединиш към екипа? Обади се на Константин Петров или Андрей Нинов и обсъдете условията.',lastTitle:'Накъде отиваме?',photoCredits:'Фотографии и автори'
+ closingTitle:'Следващата спирка е твоя.',closingDescription:'Приложението е в браузъра на телефона. Диспечерът е на 032 9999.',aboutTitle:'За дните навън. И за пътя обратно.',aboutDescription:'Хибридни автомобили и диспечер по всяко време. Пътуваме в Пловдив, а за адрес извън града можеш да се обадиш.',hybridTitle:'Твоите Зелени.',hybridDescription:'Познатите зелено-бели Hyundai Ioniq Hybrid от нашия автопарк.',peopleTitle:'Предпочиташ да се обадиш?',carCaption:'Оригинален автомобил Hyundai Ioniq Hybrid на Зелени такси',teamTitle:'Карай със Зелени.',teamDescription:'Искаш да се присъединиш към екипа? Обади се на Константин Петров или Андрей Ининов и обсъдете условията.',lastTitle:'Накъде отиваме?',photoCredits:'Фотографии и автори'
 });
 Object.assign(copy.en, {
  heroOne:'The city',heroTwo:'is waiting.',heroDescription:'For your plans, your evening, your way home. Book Zeleni from your phone.',
  orderTaxi:'Book a taxi',seeApp:'See how it works',sunsetAlt:'A real sunset panorama of Plovdiv',nightAlt:'Night traffic in Plovdiv',
  demoLabel:'App demonstration',addressAlt:'Address search in the Bulgarian test app',bookingAlt:'Example booking confirmation in Bulgarian',approachAlt:'Test car approaching the pickup point',tripAlt:'Example trip in the Bulgarian app',filmLabel:'Recording of an example trip',demoCaption:'Real screens from a test version. Example route and values.',playFilm:'Watch the demo',pauseFilm:'Pause recording',
  stepOne:'Choose an address.',stepOneDescription:'Where should we pick you up, and where are you going? Search for a place or choose it on the map.',stepTwo:'Check. Confirm.',stepTwoDescription:'Review your route and book. Once a driver accepts, you can see the car in the app.',stepThree:'We are on the way.',stepThreeDescription:'Follow the car as it approaches and see your trip information.',
- closingTitle:'Your next stop.',closingDescription:'The app opens in your phone’s browser. A dispatcher is available on 032 9999.',aboutTitle:'For your day out. And your way home.',aboutDescription:'Hybrid cars and a dispatcher around the clock. We serve Plovdiv. Call us for an address outside the city.',hybridTitle:'Your Zeleni.',hybridDescription:'The familiar green-and-white Hyundai Ioniq Hybrid cars from our fleet.',peopleTitle:'Prefer to call?',carCaption:'Original Zeleni Taxi Hyundai Ioniq Hybrid car',teamTitle:'Drive with Zeleni.',teamDescription:'Interested in joining the team? Call Konstantin Petrov or Andrey Ninov to discuss the details.',lastTitle:'Where are we going?',photoCredits:'Photography and credits'
+ closingTitle:'Your next stop.',closingDescription:'The app opens in your phone’s browser. A dispatcher is available on 032 9999.',aboutTitle:'For your day out. And your way home.',aboutDescription:'Hybrid cars and a dispatcher around the clock. We serve Plovdiv. Call us for an address outside the city.',hybridTitle:'Your Zeleni.',hybridDescription:'The familiar green-and-white Hyundai Ioniq Hybrid cars from our fleet.',peopleTitle:'Prefer to call?',carCaption:'Original Zeleni Taxi Hyundai Ioniq Hybrid car',teamTitle:'Drive with Zeleni.',teamDescription:'Interested in joining the team? Call Konstantin Petrov or Andrey Ininov to discuss the details.',lastTitle:'Where are we going?',photoCredits:'Photography and credits'
 });
 
 Object.assign(copy.bg,{fleetLabel:'Снимки на нашите автомобили',fleetHeading:'Зелени. По улиците на Пловдив.',fleetStudioAlt:'Hyundai Ioniq на Зелени пред светла архитектурна фасада',fleetStudioCaption:'Hyundai Ioniq Hybrid',fleetHospitalAlt:'Зелено-бял автомобил на Зелени с включени фарове вечер в Пловдив',fleetHospitalCaption:'Зелени такси. Пловдив.',fleetOldtownAlt:'Два автомобила на Зелени по улиците на нощен Пловдив',fleetOldtownCaption:'Нощта в Пловдив.',fleetFairAlt:'Автомобили на Зелени пред Международния панаир в Пловдив',fleetFairTitle:'Пред Панаира.',fleetFairDescription:'Част от нашия автопарк в Пловдив.',fleetCredits:'За снимките'});
@@ -215,7 +215,7 @@ Object.assign(copy.bg,{
   v7InstallDescription:'Поръчваш с няколко докосвания. Виждаш кой шофьор идва и следиш колата в реално време до твоя адрес.',
   v6FleetTitle:'Такситата са изцяло в Пловдив.',
   teamTitle:'Карай със Зелени.',
-  teamDescription:'За работа като водач се свържи с Константин Петров или Андрей Нинов.',
+  teamDescription:'За работа като водач се свържи с Константин Петров или Андрей Ининов.',
   lastTitle:'Инсталирай Зелени.',
   lastDescription:'Пловдив е началото. Създаваме Зелени с амбиция за България и Европа.',
   lastAndroid:'Инсталирай за Android',lastBrowser:'За iPhone и браузър',
@@ -230,7 +230,7 @@ Object.assign(copy.en,{
   v7InstallDescription:'Book in a few taps. See who’s picking you up and track your taxi in real time until it reaches you.',
   v6FleetTitle:'Our taxis operate exclusively in Plovdiv.',
   teamTitle:'Drive with ZELENI TAXI.',
-  teamDescription:'To discuss driving with us, call Konstantin Petrov or Andrey Ninov.',
+  teamDescription:'To discuss driving with us, call Konstantin Petrov or Andrey Ininov.',
   lastTitle:'Get ZELENI TAXI.',
   lastDescription:'Plovdiv is our starting point. Our ambition reaches across Bulgaria and Europe.',
   lastAndroid:'Install for Android',lastBrowser:'For iPhone and browser',
